@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiCreatedResponse } from '@nestjs/swagger';
 import { AssetsService } from './assets.service';
 import { AssetEntity } from './entities/asset.entity';
+import { TransferExtrinsicDto } from './dto/transfer-extrinsic.dto';
 
 @Controller('api/assets')
 @ApiTags('assets')
@@ -21,5 +22,15 @@ export class AssetsController {
     @Param('keypair') keypair: string
   ): Promise<number> {
     return this.assetsService.getAssetBalanceByAccount(asset_id, keypair);
+  }
+
+  @Post('/extrinsic/transfer')
+  @ApiCreatedResponse({
+    description: 'Transfer extrinsic created succesfully',
+    type: TransferExtrinsicDto,
+    isArray: false,
+  })
+  transferExtrinsic(@Body() data: TransferExtrinsicDto): Promise<any> {
+    return this.assetsService.transferExtrinsic(data);
   }
 }

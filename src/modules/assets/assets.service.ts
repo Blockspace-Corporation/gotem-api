@@ -3,6 +3,7 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { stringToHex, stringToU8a, u8aToHex, u8aToString, hexToString, hexToBigInt } from '@polkadot/util';
 import { AssetEntity } from './entities/asset.entity';
 import { AssetMetadataEntity } from './entities/asset-metadata.entity';
+import { TransferExtrinsicDto } from './dto/transfer-extrinsic.dto';
 
 @Injectable()
 export class AssetsService {
@@ -74,5 +75,17 @@ export class AssetsService {
 
       resolve(0)
     });
+  }
+
+  public async transferExtrinsic(data: TransferExtrinsicDto): Promise<any> {
+    const api = await this.api;
+
+    const transferExtrinsic = api.tx["assets"]["transfer"](
+      data.id,
+      data.target,
+      BigInt(data.amount * (10 ** parseInt(process.env.DECIMALS))),
+    );
+
+    return transferExtrinsic;
   }
 }

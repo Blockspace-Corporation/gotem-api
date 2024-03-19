@@ -8,8 +8,8 @@ async function bootstrap() {
   app.enableCors();
 
   const documentBuilder = new DocumentBuilder()
-    .setTitle('Humidefi')
-    .setDescription('Humidefi NestJS API Documentation')
+    .setTitle('GOTEM API')
+    .setDescription('GOTEM NestJS API Documentation')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, documentBuilder);
