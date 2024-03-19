@@ -6,12 +6,12 @@ import { EvidenceNftEntity } from './entities/evidence-nft.entity';
 
 @Injectable()
 export class SmartContractEvidenceService {
-  private wsProviderEndpoint = process.env["WS_PROVIDER"];
+  private wsProviderEndpoint = process.env.WS_PROVIDER;
   private wsProvider = new WsProvider(this.wsProviderEndpoint);
   private api = ApiPromise.create({ provider: this.wsProvider });
 
   private metadata: any = require("./../../../contract/evidence.json");
-  private contractAddress = process.env['EVIDENCE_CONTRACT_ADDRESS'];
+  private contractAddress = process.env.EVIDENCE_CONTRACT_ADDRESS;
 
   public async getAllEvidence(): Promise<EvidenceNftEntity[]> {
     return new Promise<EvidenceNftEntity[]>(async (resolve, reject) => {

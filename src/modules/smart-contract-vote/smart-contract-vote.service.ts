@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ApiPromise, WsProvider } from '@polkadot/api';
+import { stringToHex, stringToU8a, u8aToHex, u8aToString, hexToString, hexToBigInt } from '@polkadot/util';
 import { ContractPromise } from '@polkadot/api-contract';
 import { SetVoterDto } from './dto/set-voter-nft.dto';
 import { SetVoteDto } from './dto/set-vote.dto';
@@ -8,12 +9,12 @@ import { VoteEntity } from './entities/vote.entity';
 
 @Injectable()
 export class SmartContractVoteService {
-  private wsProviderEndpoint = process.env["WS_PROVIDER"];
+  private wsProviderEndpoint = process.env.WS_PROVIDER;
   private wsProvider = new WsProvider(this.wsProviderEndpoint);
   private api = ApiPromise.create({ provider: this.wsProvider });
 
   private metadata: any = require("./../../../contract/vote.json");
-  private contractAddress = process.env['VOTE_CONTRACT_ADDRESS'];
+  private contractAddress = process.env.VOTE_CONTRACT_ADDRESS;
 
   public async getAllVoter(): Promise<VoterEntity[]> {
     return new Promise<VoterEntity[]>(async (resolve, reject) => {
@@ -35,8 +36,8 @@ export class SmartContractVoteService {
               voters.push({
                 caseId: data[i].caseId,
                 voter: data[i].voter,
-                amountHold: data[i].amountHold,
-                voteCredit: data[i].voteCredit,
+                amountHold: parseFloat(String(data[i].amountHold).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
+                voteCredit: parseFloat(String(data[i].voteCredit).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
               })
             }
           }
@@ -65,8 +66,8 @@ export class SmartContractVoteService {
           voter = {
             caseId: data.caseId,
             voter: data.voter,
-            amountHold: data.amountHold,
-            voteCredit: data.voteCredit,
+            amountHold: parseFloat(String(data.amountHold).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
+            voteCredit: parseFloat(String(data.voteCredit).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
           };
         }
       }
