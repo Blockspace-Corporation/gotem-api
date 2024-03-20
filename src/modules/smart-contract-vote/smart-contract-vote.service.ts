@@ -82,13 +82,10 @@ export class SmartContractVoteService {
     const options: any = {
       storageDepositLimit: null,
       gasLimit: api.registry.createType('WeightV2', {
-        refTime: 129987,
-        proofSize: 11990383647911208550,
+        refTime: 300000000000,
+        proofSize: 500000,
       }),
     };
-
-    data.amountHold = data.amountHold * (10 ** parseInt(process.env.DECIMALS));
-    data.voteCredit = data.voteCredit * (10 ** parseInt(process.env.DECIMALS));
 
     const setVoterExtrinsic = contract.tx['setVoter'](
       options, data
@@ -167,8 +164,8 @@ export class SmartContractVoteService {
     const options: any = {
       storageDepositLimit: null,
       gasLimit: api.registry.createType('WeightV2', {
-        refTime: 129987,
-        proofSize: 11990383647911208550,
+        refTime: 300000000000,
+        proofSize: 500000,
       }),
     };
 

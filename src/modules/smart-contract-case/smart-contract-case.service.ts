@@ -85,8 +85,8 @@ export class SmartContractCaseService {
     const options: any = {
       storageDepositLimit: null,
       gasLimit: api.registry.createType('WeightV2', {
-        refTime: 129987,
-        proofSize: 11990383647911208550,
+        refTime: 300000000000,
+        proofSize: 500000,
       }),
     };
 

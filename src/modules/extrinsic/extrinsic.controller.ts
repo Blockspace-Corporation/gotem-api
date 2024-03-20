@@ -11,7 +11,7 @@ export class ExtrinsicController {
     private readonly extrinsicService: ExtrinsicService
   ) { }
 
-  @Post('/extrinsics/execute')
+  @Post('/execute')
   @ApiCreatedResponse({
     description: 'Dex extrinsics executed succesfully',
     type: ExecuteExtrinsicsStatusEntity,

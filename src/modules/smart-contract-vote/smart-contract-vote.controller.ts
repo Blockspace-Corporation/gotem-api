@@ -6,7 +6,7 @@ import { VoterEntity } from './entities/voter.entity';
 import { VoteEntity } from './entities/vote.entity';
 import { SetVoteDto } from './dto/set-vote.dto';
 
-@Controller('smart-contract-vote')
+@Controller('api/smart-contract/vote')
 @ApiTags('smart contract - vote')
 export class SmartContractVoteController {
   constructor(

@@ -4,7 +4,7 @@ import { SmartContractEvidenceService } from './smart-contract-evidence.service'
 import { SetEvidenceNftDto } from './dto/set-evidence-nft.dto';
 import { EvidenceNftEntity } from './entities/evidence-nft.entity';
 
-@Controller('smart-contract-evidence')
+@Controller('api/smart-contract/evidence')
 @ApiTags('smart contract - evidence')
 export class SmartContractEvidenceController {
   constructor(
