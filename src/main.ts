@@ -5,7 +5,12 @@ import { config } from 'dotenv';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  app.enableCors({
+    origin: [
+      'http://localhost:4200',
+      'http://dapp.gotem.io'
+    ]
+  });
 
   const documentBuilder = new DocumentBuilder()
     .setTitle('GOTEM API')
