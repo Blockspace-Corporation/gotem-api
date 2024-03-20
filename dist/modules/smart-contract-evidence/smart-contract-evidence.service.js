@@ -34,10 +34,11 @@ let SmartContractEvidenceService = class SmartContractEvidenceService {
                     if (data.length > 0) {
                         for (let i = 0; i < data.length; i++) {
                             evidenceNfts.push({
+                                evidenceId: data[i].evidenceId,
                                 description: data[i].description,
                                 owner: data[i].owner,
                                 file: data[i].file,
-                                caseId: data[i].case_id,
+                                caseId: data[i].caseId,
                                 status: data[i].status
                             });
                         }
@@ -61,6 +62,7 @@ let SmartContractEvidenceService = class SmartContractEvidenceService {
                 let data = JSON.parse(JSON.stringify(output))["ok"];
                 if (data != null) {
                     evidenceNft = {
+                        evidenceId: data.evidence_id,
                         description: data.description,
                         owner: data.owner,
                         file: data.file,
@@ -70,6 +72,36 @@ let SmartContractEvidenceService = class SmartContractEvidenceService {
                 }
             }
             resolve(evidenceNft);
+        });
+    }
+    async getAllEvidenceByCaseId(caseId) {
+        return new Promise(async (resolve, reject) => {
+            let evidenceNfts = [];
+            const api = await this.api;
+            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
+            const options = {
+                storageDepositLimit: null,
+                gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
+            };
+            const { output } = (await contract.query['evidenceByCaseId'](this.contractAddress, options, caseId));
+            if (output != null || output != undefined) {
+                let data = JSON.parse(JSON.stringify(output))["ok"];
+                if (data != null) {
+                    if (data.length > 0) {
+                        for (let i = 0; i < data.length; i++) {
+                            evidenceNfts.push({
+                                evidenceId: data[i].evidenceId,
+                                description: data[i].description,
+                                owner: data[i].owner,
+                                file: data[i].file,
+                                caseId: data[i].caseId,
+                                status: data[i].status
+                            });
+                        }
+                    }
+                }
+            }
+            resolve(evidenceNfts);
         });
     }
     async setEvidenceExtrinsic(data) {

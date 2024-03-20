@@ -27,6 +27,9 @@ let SmartContractEvidenceController = class SmartContractEvidenceController {
     getEvidenceById(id) {
         return this.smartContractEvidenceService.getEvidenceById(id);
     }
+    getAllEvidenceByCaseId(case_id) {
+        return this.smartContractEvidenceService.getAllEvidenceByCaseId(case_id);
+    }
     setEvidenceExtrinsic(data) {
         return this.smartContractEvidenceService.setEvidenceExtrinsic(data);
     }
@@ -45,6 +48,13 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], SmartContractEvidenceController.prototype, "getEvidenceById", null);
+__decorate([
+    (0, common_1.Get)('/get/all-evidence/by-case-id/:case_id'),
+    __param(0, (0, common_1.Param)('case_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], SmartContractEvidenceController.prototype, "getAllEvidenceByCaseId", null);
 __decorate([
     (0, common_1.Post)('/extrinsic/set-evidence'),
     (0, swagger_1.ApiCreatedResponse)({

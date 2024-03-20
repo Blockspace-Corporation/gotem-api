@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VoteEntity = void 0;
 class VoteEntity {
     constructor() {
+        this.voteId = 0;
         this.caseId = 0;
         this.evidenceId = 0;
         this.voter = "";
