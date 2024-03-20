@@ -1,0 +1,1 @@
+{"version":3,"file":"vote.entity.js","sourceRoot":"","sources":["../../../../src/modules/smart-contract-vote/entities/vote.entity.ts"],"names":[],"mappings":";;;AAAA,MAAa,UAAU;IAAvB;QACI,WAAM,GAAW,CAAC,CAAC;QACnB,eAAU,GAAW,CAAC,CAAC;QACvB,UAAK,GAAW,EAAE,CAAC;QACnB,cAAS,GAAW,CAAC,CAAC;QACtB,aAAQ,GAAW,CAAC,CAAC;QACrB,uBAAkB,GAAW,CAAC,CAAC;IACnC,CAAC;CAAA;AAPD,gCAOC"}
