@@ -31,10 +31,11 @@ export class SmartContractEvidenceService {
           if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
               evidenceNfts.push({
+                evidenceId: data[i].evidenceId,
                 description: data[i].description,
                 owner: data[i].owner,
                 file: data[i].file,
-                caseId: data[i].case_id,
+                caseId: data[i].caseId,
                 status: data[i].status
               })
             }
@@ -62,6 +63,7 @@ export class SmartContractEvidenceService {
         let data = JSON.parse(JSON.stringify(output))["ok"];
         if (data != null) {
           evidenceNft = {
+            evidenceId: data.evidence_id,
             description: data.description,
             owner: data.owner,
             file: data.file,
@@ -72,6 +74,40 @@ export class SmartContractEvidenceService {
       }
 
       resolve(evidenceNft);
+    });
+  }
+
+  public async getAllEvidenceByCaseId(caseId: number): Promise<EvidenceNftEntity[]> {
+    return new Promise<EvidenceNftEntity[]>(async (resolve, reject) => {
+      let evidenceNfts: EvidenceNftEntity[] = [];
+
+      const api = await this.api;
+      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
+      const options: any = {
+        storageDepositLimit: null,
+        gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
+      };
+
+      const { output } = (await contract.query['evidenceByCaseId'](this.contractAddress, options, caseId));
+      if (output != null || output != undefined) {
+        let data = JSON.parse(JSON.stringify(output))["ok"];
+        if (data != null) {
+          if (data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+              evidenceNfts.push({
+                evidenceId: data[i].evidenceId,
+                description: data[i].description,
+                owner: data[i].owner,
+                file: data[i].file,
+                caseId: data[i].caseId,
+                status: data[i].status
+              })
+            }
+          }
+        }
+      }
+
+      resolve(evidenceNfts);
     });
   }
 

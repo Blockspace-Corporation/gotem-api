@@ -1,4 +1,5 @@
 export class EvidenceNftEntity {
+    evidenceId: number = 0;
     description: string = "";
     owner: string = "";
     file: string = "";

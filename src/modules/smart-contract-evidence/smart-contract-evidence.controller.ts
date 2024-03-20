@@ -23,6 +23,13 @@ export class SmartContractEvidenceController {
     return this.smartContractEvidenceService.getEvidenceById(id);
   }
 
+  @Get('/get/all-evidence/by-case-id/:case_id')
+  getAllEvidenceByCaseId(
+    @Param('case_id') case_id: number
+  ): Promise<EvidenceNftEntity[]> {
+    return this.smartContractEvidenceService.getAllEvidenceByCaseId(case_id);
+  }
+
   @Post('/extrinsic/set-evidence')
   @ApiCreatedResponse({
     description: 'Set evidence extrinsic created succesfully',

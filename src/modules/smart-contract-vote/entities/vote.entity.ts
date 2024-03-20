@@ -1,4 +1,5 @@
 export class VoteEntity {
+    voteId: number = 0;
     caseId: number = 0;
     evidenceId: number = 0;
     voter: string = "";
