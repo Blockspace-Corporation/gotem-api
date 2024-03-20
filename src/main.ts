@@ -8,7 +8,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:4200',
-      'http://dapp.gotem.io'
+      'https://dapp.gotem.io'
     ]
   });
 
