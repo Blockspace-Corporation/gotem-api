@@ -34,6 +34,7 @@ let SmartContractCaseService = class SmartContractCaseService {
                     if (data.length > 0) {
                         for (let i = 0; i < data.length; i++) {
                             caseNfts.push({
+                                caseId: data[i].caseId,
                                 title: data[i].title,
                                 description: data[i].description,
                                 category: data[i].category,
@@ -63,6 +64,7 @@ let SmartContractCaseService = class SmartContractCaseService {
                 let data = JSON.parse(JSON.stringify(output))["ok"];
                 if (data != null) {
                     caseNft = {
+                        caseId: data.caseId,
                         title: data.title,
                         description: data.description,
                         category: data.category,

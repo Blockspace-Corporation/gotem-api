@@ -6,5 +6,6 @@ export declare class SmartContractEvidenceController {
     constructor(smartContractEvidenceService: SmartContractEvidenceService);
     getAllEvidence(): Promise<EvidenceNftEntity[]>;
     getEvidenceById(id: number): Promise<EvidenceNftEntity>;
+    getAllEvidenceByCaseId(case_id: number): Promise<EvidenceNftEntity[]>;
     setEvidenceExtrinsic(data: SetEvidenceNftDto): Promise<any>;
 }

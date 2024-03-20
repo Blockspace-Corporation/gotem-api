@@ -34,6 +34,7 @@ let SmartContractVoteService = class SmartContractVoteService {
                     if (data.length > 0) {
                         for (let i = 0; i < data.length; i++) {
                             voters.push({
+                                voterId: data[i].voterId,
                                 caseId: data[i].caseId,
                                 voter: data[i].voter,
                                 amountHold: parseFloat(String(data[i].amountHold).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
@@ -60,6 +61,7 @@ let SmartContractVoteService = class SmartContractVoteService {
                 let data = JSON.parse(JSON.stringify(output))["ok"];
                 if (data != null) {
                     voter = {
+                        voterId: data.voterId,
                         caseId: data.caseId,
                         voter: data.voter,
                         amountHold: parseFloat(String(data.amountHold).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
@@ -99,6 +101,7 @@ let SmartContractVoteService = class SmartContractVoteService {
                     if (data.length > 0) {
                         for (let i = 0; i < data.length; i++) {
                             votes.push({
+                                voteId: data[i].voteId,
                                 caseId: data[i].caseId,
                                 evidenceId: data[i].evidenceId,
                                 voter: data[i].voter,
@@ -127,6 +130,7 @@ let SmartContractVoteService = class SmartContractVoteService {
                 let data = JSON.parse(JSON.stringify(output))["ok"];
                 if (data != null) {
                     vote = {
+                        voteId: data.voteId,
                         caseId: data.caseId,
                         evidenceId: data.evidenceId,
                         voter: data.voter,

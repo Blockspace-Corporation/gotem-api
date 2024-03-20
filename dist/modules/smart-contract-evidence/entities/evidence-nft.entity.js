@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EvidenceNftEntity = void 0;
 class EvidenceNftEntity {
     constructor() {
+        this.evidenceId = 0;
         this.description = "";
         this.owner = "";
         this.file = "";

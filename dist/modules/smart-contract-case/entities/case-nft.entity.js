@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CaseNftEntity = void 0;
 class CaseNftEntity {
     constructor() {
+        this.caseId = 0;
         this.title = "";
         this.description = "";
         this.category = "";

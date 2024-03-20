@@ -8,5 +8,6 @@ export declare class SmartContractEvidenceService {
     private contractAddress;
     getAllEvidence(): Promise<EvidenceNftEntity[]>;
     getEvidenceById(id: number): Promise<EvidenceNftEntity>;
+    getAllEvidenceByCaseId(caseId: number): Promise<EvidenceNftEntity[]>;
     setEvidenceExtrinsic(data: SetEvidenceNftDto): Promise<any>;
 }
