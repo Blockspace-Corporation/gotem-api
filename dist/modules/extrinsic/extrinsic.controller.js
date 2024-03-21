@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const extrinsic_service_1 = require("./extrinsic.service");
 const execute_extrinsics_dto_1 = require("./dto/execute-extrinsics.dto");
-const execute_extrinsincs_status_entity_1 = require("./entities/execute-extrinsincs-status.entity");
 let ExtrinsicController = class ExtrinsicController {
     constructor(extrinsicService) {
         this.extrinsicService = extrinsicService;
@@ -37,11 +36,8 @@ let ExtrinsicController = class ExtrinsicController {
 exports.ExtrinsicController = ExtrinsicController;
 __decorate([
     (0, common_1.Post)('/execute'),
-    (0, swagger_1.ApiCreatedResponse)({
-        description: 'Extrinsics executed succesfully',
-        type: execute_extrinsincs_status_entity_1.ExecuteExtrinsicsStatusEntity,
-        isArray: false,
-    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Executes the signed extrinsics hex value.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [execute_extrinsics_dto_1.ExecuteExtrinsicsDto]),
