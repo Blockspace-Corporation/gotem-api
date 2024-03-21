@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x3c9e4079100e7ca971f3f263c10a8fc24557a664789a351b7e2c3d7a0d357618",
+    "hash": "0x8647cc5ea9a0cd86f74a8ab090b561e9c10be499e9c84a6cc2808b03c0fdc33e",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.69.0",
     "build_info": {
@@ -44,7 +44,7 @@
         "displayName": [
           "AccountId"
         ],
-        "type": 27
+        "type": 30
       },
       "balance": {
         "displayName": [
@@ -62,20 +62,20 @@
         "displayName": [
           "ChainExtension"
         ],
-        "type": 29
+        "type": 32
       },
       "hash": {
         "displayName": [
           "Hash"
         ],
-        "type": 25
+        "type": 28
       },
       "maxEventTopics": 4,
       "timestamp": {
         "displayName": [
           "Timestamp"
         ],
-        "type": 28
+        "type": 31
       }
     },
     "events": [],
@@ -140,6 +140,128 @@
         "selector": "0xa3ecf8d5"
       },
       {
+        "args": [
+          {
+            "label": "voter_id",
+            "type": {
+              "displayName": [
+                "Id"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "burn_voter",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 15
+        },
+        "selector": "0x66952c99"
+      },
+      {
+        "args": [
+          {
+            "label": "vote_id",
+            "type": {
+              "displayName": [
+                "Id"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "burn_vote",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 15
+        },
+        "selector": "0x2434aead"
+      },
+      {
+        "args": [
+          {
+            "label": "voter_id",
+            "type": {
+              "displayName": [
+                "Id"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "label": "new_voter",
+            "type": {
+              "displayName": [
+                "Voter"
+              ],
+              "type": 2
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "update_voter",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 15
+        },
+        "selector": "0x524f30bc"
+      },
+      {
+        "args": [
+          {
+            "label": "vote_id",
+            "type": {
+              "displayName": [
+                "Id"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "label": "new_vote",
+            "type": {
+              "displayName": [
+                "Votes"
+              ],
+              "type": 8
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "update_vote",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 15
+        },
+        "selector": "0x578151ba"
+      },
+      {
         "args": [],
         "default": false,
         "docs": [],
@@ -151,7 +273,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 15
+          "type": 18
         },
         "selector": "0x5ba626c6"
       },
@@ -177,7 +299,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 18
+          "type": 21
         },
         "selector": "0x24e2766d"
       },
@@ -193,7 +315,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 20
+          "type": 23
         },
         "selector": "0x34420d93"
       },
@@ -219,7 +341,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 23
+          "type": 26
         },
         "selector": "0x496a82be"
       },
@@ -237,7 +359,7 @@
         ],
         "default": false,
         "docs": [],
-        "label": "voter_by_evidence_id",
+        "label": "votes_by_evidence_id",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -245,9 +367,9 @@
             "ink",
             "MessageResult"
           ],
-          "type": 15
+          "type": 23
         },
-        "selector": "0xb077d4cf"
+        "selector": "0x3c0cabd5"
       },
       {
         "args": [
@@ -257,7 +379,7 @@
               "displayName": [
                 "Hash"
               ],
-              "type": 25
+              "type": 28
             }
           }
         ],
@@ -633,42 +755,57 @@
       "id": 16,
       "type": {
         "def": {
-          "sequence": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 13
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 17
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 13
+          },
+          {
+            "name": "E",
             "type": 17
           }
-        }
+        ],
+        "path": [
+          "Result"
+        ]
       }
     },
     {
       "id": 17,
       "type": {
         "def": {
-          "composite": {
-            "fields": [
+          "variant": {
+            "variants": [
               {
-                "name": "voter_id",
-                "type": 1,
-                "typeName": "Id"
+                "index": 0,
+                "name": "VoterNotFound"
               },
               {
-                "name": "case_id",
-                "type": 1,
-                "typeName": "Id"
-              },
-              {
-                "name": "voter",
-                "type": 3,
-                "typeName": "String"
-              },
-              {
-                "name": "amount_hold",
-                "type": 4,
-                "typeName": "Balance"
-              },
-              {
-                "name": "vote_credit",
-                "type": 4,
-                "typeName": "Balance"
+                "index": 1,
+                "name": "VoteNotFound"
               }
             ]
           }
@@ -676,7 +813,7 @@
         "path": [
           "vote",
           "vote",
-          "VoterID"
+          "Error"
         ]
       }
     },
@@ -726,37 +863,55 @@
       "id": 19,
       "type": {
         "def": {
-          "variant": {
-            "variants": [
-              {
-                "index": 0,
-                "name": "None"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 17
-                  }
-                ],
-                "index": 1,
-                "name": "Some"
-              }
-            ]
+          "sequence": {
+            "type": 20
           }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 17
-          }
-        ],
-        "path": [
-          "Option"
-        ]
+        }
       }
     },
     {
       "id": 20,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "voter_id",
+                "type": 1,
+                "typeName": "Id"
+              },
+              {
+                "name": "case_id",
+                "type": 1,
+                "typeName": "Id"
+              },
+              {
+                "name": "voter",
+                "type": 3,
+                "typeName": "String"
+              },
+              {
+                "name": "amount_hold",
+                "type": 4,
+                "typeName": "Balance"
+              },
+              {
+                "name": "vote_credit",
+                "type": 4,
+                "typeName": "Balance"
+              }
+            ]
+          }
+        },
+        "path": [
+          "vote",
+          "vote",
+          "VoterOutput"
+        ]
+      }
+    },
+    {
+      "id": 21,
       "type": {
         "def": {
           "variant": {
@@ -764,7 +919,7 @@
               {
                 "fields": [
                   {
-                    "type": 21
+                    "type": 22
                   }
                 ],
                 "index": 0,
@@ -785,7 +940,7 @@
         "params": [
           {
             "name": "T",
-            "type": 21
+            "type": 22
           },
           {
             "name": "E",
@@ -798,63 +953,35 @@
       }
     },
     {
-      "id": 21,
-      "type": {
-        "def": {
-          "sequence": {
-            "type": 22
-          }
-        }
-      }
-    },
-    {
       "id": 22,
       "type": {
         "def": {
-          "composite": {
-            "fields": [
+          "variant": {
+            "variants": [
               {
-                "name": "vote_id",
-                "type": 1,
-                "typeName": "Id"
+                "index": 0,
+                "name": "None"
               },
               {
-                "name": "case_id",
-                "type": 1,
-                "typeName": "Id"
-              },
-              {
-                "name": "evidence_id",
-                "type": 1,
-                "typeName": "Id"
-              },
-              {
-                "name": "voter",
-                "type": 3,
-                "typeName": "String"
-              },
-              {
-                "name": "yes_credit",
-                "type": 9,
-                "typeName": "u8"
-              },
-              {
-                "name": "no_credit",
-                "type": 9,
-                "typeName": "u8"
-              },
-              {
-                "name": "destribution_reward",
-                "type": 9,
-                "typeName": "u8"
+                "fields": [
+                  {
+                    "type": 20
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
               }
             ]
           }
         },
+        "params": [
+          {
+            "name": "T",
+            "type": 20
+          }
+        ],
         "path": [
-          "vote",
-          "vote",
-          "VotesID"
+          "Option"
         ]
       }
     },
@@ -904,6 +1031,109 @@
       "id": 24,
       "type": {
         "def": {
+          "sequence": {
+            "type": 25
+          }
+        }
+      }
+    },
+    {
+      "id": 25,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "vote_id",
+                "type": 1,
+                "typeName": "Id"
+              },
+              {
+                "name": "case_id",
+                "type": 1,
+                "typeName": "Id"
+              },
+              {
+                "name": "evidence_id",
+                "type": 1,
+                "typeName": "Id"
+              },
+              {
+                "name": "voter",
+                "type": 3,
+                "typeName": "String"
+              },
+              {
+                "name": "yes_credit",
+                "type": 9,
+                "typeName": "u8"
+              },
+              {
+                "name": "no_credit",
+                "type": 9,
+                "typeName": "u8"
+              },
+              {
+                "name": "destribution_reward",
+                "type": 9,
+                "typeName": "u8"
+              }
+            ]
+          }
+        },
+        "path": [
+          "vote",
+          "vote",
+          "VotesOutput"
+        ]
+      }
+    },
+    {
+      "id": 26,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 27
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 14
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 27
+          },
+          {
+            "name": "E",
+            "type": 14
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 27,
+      "type": {
+        "def": {
           "variant": {
             "variants": [
               {
@@ -913,7 +1143,7 @@
               {
                 "fields": [
                   {
-                    "type": 22
+                    "type": 25
                   }
                 ],
                 "index": 1,
@@ -925,7 +1155,7 @@
         "params": [
           {
             "name": "T",
-            "type": 22
+            "type": 25
           }
         ],
         "path": [
@@ -934,13 +1164,13 @@
       }
     },
     {
-      "id": 25,
+      "id": 28,
       "type": {
         "def": {
           "composite": {
             "fields": [
               {
-                "type": 26,
+                "type": 29,
                 "typeName": "[u8; 32]"
               }
             ]
@@ -954,7 +1184,7 @@
       }
     },
     {
-      "id": 26,
+      "id": 29,
       "type": {
         "def": {
           "array": {
@@ -965,13 +1195,13 @@
       }
     },
     {
-      "id": 27,
+      "id": 30,
       "type": {
         "def": {
           "composite": {
             "fields": [
               {
-                "type": 26,
+                "type": 29,
                 "typeName": "[u8; 32]"
               }
             ]
@@ -985,7 +1215,7 @@
       }
     },
     {
-      "id": 28,
+      "id": 31,
       "type": {
         "def": {
           "primitive": "u64"
@@ -993,7 +1223,7 @@
       }
     },
     {
-      "id": 29,
+      "id": 32,
       "type": {
         "def": {
           "variant": {}

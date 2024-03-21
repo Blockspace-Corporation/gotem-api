@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const smart_contract_evidence_service_1 = require("./smart-contract-evidence.service");
 const set_evidence_nft_dto_1 = require("./dto/set-evidence-nft.dto");
+const update_evidence_nft_dto_1 = require("./dto/update-evidence-nft.dto");
 let SmartContractEvidenceController = class SmartContractEvidenceController {
     constructor(smartContractEvidenceService) {
         this.smartContractEvidenceService = smartContractEvidenceService;
@@ -41,16 +42,42 @@ let SmartContractEvidenceController = class SmartContractEvidenceController {
             }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    async updateEvidenceExtrinsic(id, data) {
+        try {
+            return await this.smartContractEvidenceService.updateEvidenceExtrinsic(id, data);
+        }
+        catch (error) {
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.toString() || 'Internal server error',
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async burnEvidenceExtrinsic(id) {
+        try {
+            return await this.smartContractEvidenceService.burnEvidenceExtrinsic(id);
+        }
+        catch (error) {
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.toString() || 'Internal server error',
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 };
 exports.SmartContractEvidenceController = SmartContractEvidenceController;
 __decorate([
     (0, common_1.Get)('/get/all-evidence'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns an array of records.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], SmartContractEvidenceController.prototype, "getAllEvidence", null);
 __decorate([
     (0, common_1.Get)('/get/evidence/by-id/:id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the current record.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -58,6 +85,8 @@ __decorate([
 ], SmartContractEvidenceController.prototype, "getEvidenceById", null);
 __decorate([
     (0, common_1.Get)('/get/all-evidence/by-case-id/:case_id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns an array of records.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __param(0, (0, common_1.Param)('case_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -65,16 +94,34 @@ __decorate([
 ], SmartContractEvidenceController.prototype, "getAllEvidenceByCaseId", null);
 __decorate([
     (0, common_1.Post)('/extrinsic/set-evidence'),
-    (0, swagger_1.ApiCreatedResponse)({
-        description: 'Set evidence extrinsic created succesfully',
-        type: set_evidence_nft_dto_1.SetEvidenceNftDto,
-        isArray: false,
-    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the created unsigned extrinsic hex value.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [set_evidence_nft_dto_1.SetEvidenceNftDto]),
     __metadata("design:returntype", Promise)
 ], SmartContractEvidenceController.prototype, "setEvidenceExtrinsic", null);
+__decorate([
+    (0, common_1.Put)('/extrinsic/update-evidence/:id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the created unsigned extrinsic hex value.' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Record not found.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, update_evidence_nft_dto_1.UpdateEvidenceNftDto]),
+    __metadata("design:returntype", Promise)
+], SmartContractEvidenceController.prototype, "updateEvidenceExtrinsic", null);
+__decorate([
+    (0, common_1.Delete)('/extrinsic/burn-evidence/:id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the created unsigned extrinsic hex value.' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Record not found.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], SmartContractEvidenceController.prototype, "burnEvidenceExtrinsic", null);
 exports.SmartContractEvidenceController = SmartContractEvidenceController = __decorate([
     (0, common_1.Controller)('api/smart-contract/evidence'),
     (0, swagger_1.ApiTags)('smart contract - evidence'),

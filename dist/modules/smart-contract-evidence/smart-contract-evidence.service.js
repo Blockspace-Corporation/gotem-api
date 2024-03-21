@@ -38,6 +38,7 @@ let SmartContractEvidenceService = class SmartContractEvidenceService {
                             owner: data[i].owner,
                             file: data[i].file,
                             caseId: data[i].caseId,
+                            caseTitle: data[i].caseTitle,
                             status: data[i].status
                         });
                     }
@@ -59,11 +60,12 @@ let SmartContractEvidenceService = class SmartContractEvidenceService {
             let data = JSON.parse(JSON.stringify(output))["ok"];
             if (data != null) {
                 evidenceNft = {
-                    evidenceId: data.evidence_id,
+                    evidenceId: data.evidenceId,
                     description: data.description,
                     owner: data.owner,
                     file: data.file,
-                    caseId: data.case_id,
+                    caseId: data.caseId,
+                    caseTitle: data.caseTitle,
                     status: data.status
                 };
             }
@@ -90,6 +92,7 @@ let SmartContractEvidenceService = class SmartContractEvidenceService {
                             owner: data[i].owner,
                             file: data[i].file,
                             caseId: data[i].caseId,
+                            caseTitle: data[i].caseTitle,
                             status: data[i].status
                         });
                     }
@@ -111,6 +114,42 @@ let SmartContractEvidenceService = class SmartContractEvidenceService {
             };
             const setEvidenceExtrinsic = contract.tx['setEvidence'](options, data);
             return setEvidenceExtrinsic;
+        }
+        catch (error) {
+            return error;
+        }
+    }
+    async updateEvidenceExtrinsic(id, data) {
+        try {
+            const api = await this.api;
+            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
+            const options = {
+                storageDepositLimit: null,
+                gasLimit: api.registry.createType('WeightV2', {
+                    refTime: 300000000000,
+                    proofSize: 500000,
+                }),
+            };
+            const updateEvidenceExtrinsic = contract.tx['updateEvidence'](options, id, data);
+            return updateEvidenceExtrinsic;
+        }
+        catch (error) {
+            return error;
+        }
+    }
+    async burnEvidenceExtrinsic(id) {
+        try {
+            const api = await this.api;
+            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
+            const options = {
+                storageDepositLimit: null,
+                gasLimit: api.registry.createType('WeightV2', {
+                    refTime: 300000000000,
+                    proofSize: 500000,
+                }),
+            };
+            const burnEvidenceExtrinsic = contract.tx['burnEvidence'](options, id);
+            return burnEvidenceExtrinsic;
         }
         catch (error) {
             return error;
