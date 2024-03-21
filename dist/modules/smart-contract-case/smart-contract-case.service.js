@@ -92,6 +92,42 @@ let SmartContractCaseService = class SmartContractCaseService {
             throw error;
         }
     }
+    async updateCaseExtrinsic(id, data) {
+        try {
+            const api = await this.api;
+            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
+            const options = {
+                storageDepositLimit: null,
+                gasLimit: api.registry.createType('WeightV2', {
+                    refTime: 300000000000,
+                    proofSize: 500000,
+                }),
+            };
+            const updateCaseExtrinsic = contract.tx['updateCase'](options, id, data);
+            return updateCaseExtrinsic;
+        }
+        catch (error) {
+            throw error;
+        }
+    }
+    async burnCaseExtrinsic(id) {
+        try {
+            const api = await this.api;
+            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
+            const options = {
+                storageDepositLimit: null,
+                gasLimit: api.registry.createType('WeightV2', {
+                    refTime: 300000000000,
+                    proofSize: 500000,
+                }),
+            };
+            const burnCaseExtrinsic = contract.tx['burnCase'](options, id);
+            return burnCaseExtrinsic;
+        }
+        catch (error) {
+            throw error;
+        }
+    }
 };
 exports.SmartContractCaseService = SmartContractCaseService;
 exports.SmartContractCaseService = SmartContractCaseService = __decorate([

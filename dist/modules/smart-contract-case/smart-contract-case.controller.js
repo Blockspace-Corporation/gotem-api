@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const smart_contract_case_service_1 = require("./smart-contract-case.service");
 const set_case_nft_dto_1 = require("./dto/set-case-nft.dto");
+const update_case_nft_dto_1 = require("./dto/update-case-nft.dto");
 let SmartContractCaseController = class SmartContractCaseController {
     constructor(smartContractCaseService) {
         this.smartContractCaseService = smartContractCaseService;
@@ -38,16 +39,42 @@ let SmartContractCaseController = class SmartContractCaseController {
             }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    async updateCaseExtrinsic(id, data) {
+        try {
+            return await this.smartContractCaseService.updateCaseExtrinsic(id, data);
+        }
+        catch (error) {
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.toString() || 'Internal server error',
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async burnCaseExtrinsic(id) {
+        try {
+            return await this.smartContractCaseService.burnCaseExtrinsic(id);
+        }
+        catch (error) {
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.toString() || 'Internal server error',
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 };
 exports.SmartContractCaseController = SmartContractCaseController;
 __decorate([
     (0, common_1.Get)('/get/all-case'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns an array of records.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], SmartContractCaseController.prototype, "getAllCase", null);
 __decorate([
     (0, common_1.Get)('/get/case/by-id/:id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the current record.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -55,16 +82,34 @@ __decorate([
 ], SmartContractCaseController.prototype, "getCaseById", null);
 __decorate([
     (0, common_1.Post)('/extrinsic/set-case'),
-    (0, swagger_1.ApiCreatedResponse)({
-        description: 'Set case extrinsic created succesfully',
-        type: set_case_nft_dto_1.SetCaseNftDto,
-        isArray: false,
-    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the created unsigned extrinsic hex value.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [set_case_nft_dto_1.SetCaseNftDto]),
     __metadata("design:returntype", Promise)
 ], SmartContractCaseController.prototype, "setCaseExtrinsic", null);
+__decorate([
+    (0, common_1.Put)('/extrinsic/update-case/:id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the created unsigned extrinsic hex value.' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Record not found.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, update_case_nft_dto_1.UpdateCaseNftDto]),
+    __metadata("design:returntype", Promise)
+], SmartContractCaseController.prototype, "updateCaseExtrinsic", null);
+__decorate([
+    (0, common_1.Delete)('/extrinsic/burn-case/:id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the created unsigned extrinsic hex value.' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Record not found.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], SmartContractCaseController.prototype, "burnCaseExtrinsic", null);
 exports.SmartContractCaseController = SmartContractCaseController = __decorate([
     (0, common_1.Controller)('api/smart-contract/case'),
     (0, swagger_1.ApiTags)('smart contract - case'),

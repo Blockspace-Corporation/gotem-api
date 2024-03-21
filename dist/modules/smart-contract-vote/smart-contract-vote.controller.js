@@ -18,6 +18,8 @@ const swagger_1 = require("@nestjs/swagger");
 const smart_contract_vote_service_1 = require("./smart-contract-vote.service");
 const set_voter_nft_dto_1 = require("./dto/set-voter-nft.dto");
 const set_vote_dto_1 = require("./dto/set-vote.dto");
+const update_voter_nft_dto_1 = require("./dto/update-voter-nft.dto");
+const update_vote_dto_1 = require("./dto/update-vote.dto");
 let SmartContractVoteController = class SmartContractVoteController {
     constructor(smartContractVoteService) {
         this.smartContractVoteService = smartContractVoteService;
@@ -28,14 +30,47 @@ let SmartContractVoteController = class SmartContractVoteController {
     getVoterById(id) {
         return this.smartContractVoteService.getVoterById(id);
     }
-    setVoterExtrinsic(data) {
-        return this.smartContractVoteService.setVoterExtrinsic(data);
+    async setVoterExtrinsic(data) {
+        try {
+            return await this.smartContractVoteService.setVoterExtrinsic(data);
+        }
+        catch (error) {
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.toString() || 'Internal server error',
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async updateVoterExtrinsic(id, data) {
+        try {
+            return await this.smartContractVoteService.updateVoterExtrinsic(id, data);
+        }
+        catch (error) {
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.toString() || 'Internal server error',
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async burnVoterExtrinsic(id) {
+        try {
+            return await this.smartContractVoteService.burnVoterExtrinsic(id);
+        }
+        catch (error) {
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.toString() || 'Internal server error',
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     getAllVote() {
         return this.smartContractVoteService.getAllVote();
     }
     getVoteById(id) {
         return this.smartContractVoteService.getVoteById(id);
+    }
+    getAllVoteByEvidenceId(evidence_id) {
+        return this.smartContractVoteService.getAllVoteByEvidenceId(evidence_id);
     }
     async setVoteExtrinsic(data) {
         try {
@@ -48,16 +83,42 @@ let SmartContractVoteController = class SmartContractVoteController {
             }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    async updateVoteExtrinsic(id, data) {
+        try {
+            return await this.smartContractVoteService.updateVoteExtrinsic(id, data);
+        }
+        catch (error) {
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.toString() || 'Internal server error',
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async burnVoteExtrinsic(id) {
+        try {
+            return await this.smartContractVoteService.burnVoteExtrinsic(id);
+        }
+        catch (error) {
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.toString() || 'Internal server error',
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 };
 exports.SmartContractVoteController = SmartContractVoteController;
 __decorate([
     (0, common_1.Get)('/get/all-voter'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns an array of records.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], SmartContractVoteController.prototype, "getAllVoter", null);
 __decorate([
     (0, common_1.Get)('/get/voter/by-id/:id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the current record.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -65,41 +126,90 @@ __decorate([
 ], SmartContractVoteController.prototype, "getVoterById", null);
 __decorate([
     (0, common_1.Post)('/extrinsic/set-voter'),
-    (0, swagger_1.ApiCreatedResponse)({
-        description: 'Set voter extrinsic created succesfully',
-        type: set_voter_nft_dto_1.SetVoterDto,
-        isArray: false,
-    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the created unsigned extrinsic hex value.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [set_voter_nft_dto_1.SetVoterDto]),
     __metadata("design:returntype", Promise)
 ], SmartContractVoteController.prototype, "setVoterExtrinsic", null);
 __decorate([
+    (0, common_1.Put)('/extrinsic/update-voter/:id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Creates an unsigned extrinsic hex value.' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Record not found.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, update_voter_nft_dto_1.UpdateVoterDto]),
+    __metadata("design:returntype", Promise)
+], SmartContractVoteController.prototype, "updateVoterExtrinsic", null);
+__decorate([
+    (0, common_1.Delete)('/extrinsic/burn-voter/:id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Creates an unsigned extrinsic hex value.' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Record not found.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], SmartContractVoteController.prototype, "burnVoterExtrinsic", null);
+__decorate([
     (0, common_1.Get)('/get/all-vote'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns an array of records.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], SmartContractVoteController.prototype, "getAllVote", null);
 __decorate([
     (0, common_1.Get)('/get/vote/by-id/:id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the current record.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], SmartContractVoteController.prototype, "getVoteById", null);
 __decorate([
+    (0, common_1.Get)('/get/all-vote/by-evidence-id/:evidence_id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns an array of records.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
+    __param(0, (0, common_1.Param)('evidence_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], SmartContractVoteController.prototype, "getAllVoteByEvidenceId", null);
+__decorate([
     (0, common_1.Post)('/extrinsic/set-vote'),
-    (0, swagger_1.ApiCreatedResponse)({
-        description: 'Set vote extrinsic created succesfully',
-        type: set_vote_dto_1.SetVoteDto,
-        isArray: false,
-    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Creates an unsigned extrinsic hex value.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [set_vote_dto_1.SetVoteDto]),
     __metadata("design:returntype", Promise)
 ], SmartContractVoteController.prototype, "setVoteExtrinsic", null);
+__decorate([
+    (0, common_1.Put)('/extrinsic/update-vote/:id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Creates an unsigned extrinsic hex value.' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Record not found.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, update_vote_dto_1.UpdateVoteDto]),
+    __metadata("design:returntype", Promise)
+], SmartContractVoteController.prototype, "updateVoteExtrinsic", null);
+__decorate([
+    (0, common_1.Delete)('/extrinsic/burn-vote/:id'),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Creates an unsigned extrinsic hex value.' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Record not found.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal server error.' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], SmartContractVoteController.prototype, "burnVoteExtrinsic", null);
 exports.SmartContractVoteController = SmartContractVoteController = __decorate([
     (0, common_1.Controller)('api/smart-contract/vote'),
     (0, swagger_1.ApiTags)('smart contract - vote'),

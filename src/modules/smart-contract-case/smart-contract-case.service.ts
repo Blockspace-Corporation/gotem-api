@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ContractPromise } from '@polkadot/api-contract';
 import { SetCaseNftDto } from './dto/set-case-nft.dto';
+import { UpdateCaseNftDto } from './dto/update-case-nft.dto';
 import { CaseNftEntity } from './entities/case-nft.entity';
 
 @Injectable()
@@ -94,6 +95,50 @@ export class SmartContractCaseService {
       );
 
       return setCaseExtrinsic;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async updateCaseExtrinsic(id: number, data: UpdateCaseNftDto): Promise<any> {
+    try {
+      const api = await this.api;
+      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
+      const options: any = {
+        storageDepositLimit: null,
+        gasLimit: api.registry.createType('WeightV2', {
+          refTime: 300000000000,
+          proofSize: 500000,
+        }),
+      };
+
+      const updateCaseExtrinsic = contract.tx['updateCase'](
+        options, id, data
+      );
+
+      return updateCaseExtrinsic;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async burnCaseExtrinsic(id: number): Promise<any> {
+    try {
+      const api = await this.api;
+      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
+      const options: any = {
+        storageDepositLimit: null,
+        gasLimit: api.registry.createType('WeightV2', {
+          refTime: 300000000000,
+          proofSize: 500000,
+        }),
+      };
+
+      const burnCaseExtrinsic = contract.tx['burnCase'](
+        options, id
+      );
+
+      return burnCaseExtrinsic;
     } catch (error) {
       throw error;
     }

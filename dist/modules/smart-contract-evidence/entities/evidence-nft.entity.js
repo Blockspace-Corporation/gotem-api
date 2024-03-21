@@ -8,6 +8,7 @@ class EvidenceNftEntity {
         this.owner = "";
         this.file = "";
         this.caseId = 0;
+        this.caseTitle = "";
         this.status = "";
     }
 }

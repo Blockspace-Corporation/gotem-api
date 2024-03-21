@@ -3,6 +3,8 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ContractPromise } from '@polkadot/api-contract';
 import { SetVoterDto } from './dto/set-voter-nft.dto';
 import { SetVoteDto } from './dto/set-vote.dto';
+import { UpdateVoterDto } from './dto/update-voter-nft.dto';
+import { UpdateVoteDto } from './dto/update-vote.dto';
 import { VoterEntity } from './entities/voter.entity';
 import { VoteEntity } from './entities/vote.entity';
 
@@ -95,6 +97,51 @@ export class SmartContractVoteService {
     }
   }
 
+
+  public async updateVoterExtrinsic(id: number, data: UpdateVoterDto): Promise<any> {
+    try {
+      const api = await this.api;
+      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
+      const options: any = {
+        storageDepositLimit: null,
+        gasLimit: api.registry.createType('WeightV2', {
+          refTime: 300000000000,
+          proofSize: 500000,
+        }),
+      };
+
+      const updateVoterExtrinsic = contract.tx['updateVoter'](
+        options, id, data
+      );
+
+      return updateVoterExtrinsic;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  public async burnVoterExtrinsic(id: number): Promise<any> {
+    try {
+      const api = await this.api;
+      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
+      const options: any = {
+        storageDepositLimit: null,
+        gasLimit: api.registry.createType('WeightV2', {
+          refTime: 300000000000,
+          proofSize: 500000,
+        }),
+      };
+
+      const burnVoterExtrinsic = contract.tx['burnVoter'](
+        options, id
+      );
+
+      return burnVoterExtrinsic;
+    } catch (error) {
+      return error;
+    }
+  }
+
   public async getAllVote(): Promise<VoteEntity[]> {
     let votes: VoteEntity[] = [];
 
@@ -157,6 +204,39 @@ export class SmartContractVoteService {
     return vote;
   }
 
+  public async getAllVoteByEvidenceId(evidenceId: number): Promise<VoteEntity[]> {
+    let votes: VoteEntity[] = [];
+
+    const api = await this.api;
+    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
+    const options: any = {
+      storageDepositLimit: null,
+      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
+    };
+
+    const { output } = (await contract.query['votesByEvidenceId'](this.contractAddress, options, evidenceId));
+    if (output != null || output != undefined) {
+      let data = JSON.parse(JSON.stringify(output))["ok"];
+      if (data != null) {
+        if (data.length > 0) {
+          for (let i = 0; i < data.length; i++) {
+            votes.push({
+              voteId: data[i].voteId,
+              caseId: data[i].caseId,
+              evidenceId: data[i].evidenceId,
+              voter: data[i].voter,
+              yesCredit: data[i].yesCredit,
+              noCredit: data[i].noCredit,
+              destributionReward: data[i].destributionReward
+            })
+          }
+        }
+      }
+    }
+
+    return votes;
+  }
+
   public async setVoteExtrinsic(data: SetVoteDto): Promise<any> {
     try {
       const api = await this.api;
@@ -174,6 +254,50 @@ export class SmartContractVoteService {
       );
 
       return setVoterExtrinsic;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  public async updateVoteExtrinsic(id: number, data: UpdateVoteDto): Promise<any> {
+    try {
+      const api = await this.api;
+      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
+      const options: any = {
+        storageDepositLimit: null,
+        gasLimit: api.registry.createType('WeightV2', {
+          refTime: 300000000000,
+          proofSize: 500000,
+        }),
+      };
+
+      const updateVoteExtrinsic = contract.tx['updateVote'](
+        options, id, data
+      );
+
+      return updateVoteExtrinsic;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  public async burnVoteExtrinsic(id: number): Promise<any> {
+    try {
+      const api = await this.api;
+      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
+      const options: any = {
+        storageDepositLimit: null,
+        gasLimit: api.registry.createType('WeightV2', {
+          refTime: 300000000000,
+          proofSize: 500000,
+        }),
+      };
+
+      const burnVoteExtrinsic = contract.tx['burnVote'](
+        options, id
+      );
+
+      return burnVoteExtrinsic;
     } catch (error) {
       return error;
     }

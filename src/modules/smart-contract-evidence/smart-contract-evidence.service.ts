@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ContractPromise } from '@polkadot/api-contract';
 import { SetEvidenceNftDto } from './dto/set-evidence-nft.dto';
+import { UpdateEvidenceNftDto } from './dto/update-evidence-nft.dto';
 import { EvidenceNftEntity } from './entities/evidence-nft.entity';
 
 @Injectable()
@@ -125,6 +126,50 @@ export class SmartContractEvidenceService {
       );
 
       return setEvidenceExtrinsic;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  public async updateEvidenceExtrinsic(id: number, data: UpdateEvidenceNftDto): Promise<any> {
+    try {
+      const api = await this.api;
+      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
+      const options: any = {
+        storageDepositLimit: null,
+        gasLimit: api.registry.createType('WeightV2', {
+          refTime: 300000000000,
+          proofSize: 500000,
+        }),
+      };
+
+      const updateEvidenceExtrinsic = contract.tx['updateEvidence'](
+        options, id, data
+      );
+
+      return updateEvidenceExtrinsic;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  public async burnEvidenceExtrinsic(id: number): Promise<any> {
+    try {
+      const api = await this.api;
+      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
+      const options: any = {
+        storageDepositLimit: null,
+        gasLimit: api.registry.createType('WeightV2', {
+          refTime: 300000000000,
+          proofSize: 500000,
+        }),
+      };
+
+      const burnEvidenceExtrinsic = contract.tx['burnEvidence'](
+        options, id
+      );
+
+      return burnEvidenceExtrinsic;
     } catch (error) {
       return error;
     }
