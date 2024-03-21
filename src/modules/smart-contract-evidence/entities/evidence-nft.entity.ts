@@ -4,5 +4,6 @@ export class EvidenceNftEntity {
     owner: string = "";
     file: string = "";
     caseId: number = 0;
+    caseTitle: string = "";
     status: string = "";
 }
