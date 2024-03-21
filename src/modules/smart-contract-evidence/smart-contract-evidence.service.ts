@@ -35,6 +35,7 @@ export class SmartContractEvidenceService {
               owner: data[i].owner,
               file: data[i].file,
               caseId: data[i].caseId,
+              caseTitle: data[i].caseTitle,
               status: data[i].status
             })
           }
@@ -60,11 +61,12 @@ export class SmartContractEvidenceService {
       let data = JSON.parse(JSON.stringify(output))["ok"];
       if (data != null) {
         evidenceNft = {
-          evidenceId: data.evidence_id,
+          evidenceId: data.evidenceId,
           description: data.description,
           owner: data.owner,
           file: data.file,
-          caseId: data.case_id,
+          caseId: data.caseId,
+          caseTitle: data.caseTitle,
           status: data.status
         };
       }
@@ -95,6 +97,7 @@ export class SmartContractEvidenceService {
               owner: data[i].owner,
               file: data[i].file,
               caseId: data[i].caseId,
+              caseTitle: data[i].caseTitle,
               status: data[i].status
             })
           }
