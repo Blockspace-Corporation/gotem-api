@@ -61,8 +61,8 @@ let AssetsService = class AssetsService {
     async getAssetBalanceByAccount(asset_id, keypair) {
         const api = await this.api;
         return new Promise(async (resolve, reject) => {
-            const getAssetByAccount = (await api.query["assets"]["account"](asset_id, keypair));
-            if (getAssetByAccount != null || getAssetByAccount != undefined) {
+            if (api.query["assets"] != null || undefined) {
+                const getAssetByAccount = (await api.query["assets"]["account"](asset_id, keypair));
                 if (getAssetByAccount.isEmpty == false) {
                     let data = getAssetByAccount.toHuman();
                     let balance = data.balance;
