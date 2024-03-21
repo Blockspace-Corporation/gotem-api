@@ -9,7 +9,9 @@ async function bootstrap() {
     origin: [
       'http://localhost:4200',
       'https://dapp.gotem.io'
-    ]
+    ],
+    methods: ['GET', 'POST'],
+    credentials: true,
   });
 
   const documentBuilder = new DocumentBuilder()
