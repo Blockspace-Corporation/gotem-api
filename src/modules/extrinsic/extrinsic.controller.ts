@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiCreatedResponse } from '@nestjs/swagger';
 import { ExtrinsicService } from './extrinsic.service';
 import { ExecuteExtrinsicsDto } from './dto/execute-extrinsics.dto';
@@ -13,11 +13,18 @@ export class ExtrinsicController {
 
   @Post('/execute')
   @ApiCreatedResponse({
-    description: 'Dex extrinsics executed succesfully',
+    description: 'Extrinsics executed succesfully',
     type: ExecuteExtrinsicsStatusEntity,
     isArray: false,
   })
-  executeExtrinsics(@Body() data: ExecuteExtrinsicsDto): Promise<ExecuteExtrinsicsStatusEntity> {
-    return this.extrinsicService.executeExtrinsics(data);
+  async executeExtrinsics(@Body() data: ExecuteExtrinsicsDto): Promise<any> {
+    try {
+      return await this.extrinsicService.executeExtrinsics(data);
+    } catch (error) {
+      throw new HttpException({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        error: error.toString() || 'Internal server error',
+      }, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
