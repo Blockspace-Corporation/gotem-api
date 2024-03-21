@@ -21,14 +21,22 @@ let SmartContractCaseController = class SmartContractCaseController {
     constructor(smartContractCaseService) {
         this.smartContractCaseService = smartContractCaseService;
     }
-    getAllCase() {
-        return this.smartContractCaseService.getAllCase();
+    async getAllCase() {
+        return await this.smartContractCaseService.getAllCase();
     }
-    getCaseById(id) {
-        return this.smartContractCaseService.getCaseById(id);
+    async getCaseById(id) {
+        return await this.smartContractCaseService.getCaseById(id);
     }
-    setCaseExtrinsic(data) {
-        return this.smartContractCaseService.setCaseExtrinsic(data);
+    async setCaseExtrinsic(data) {
+        try {
+            return await this.smartContractCaseService.setCaseExtrinsic(data);
+        }
+        catch (error) {
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.toString() || 'Internal server error',
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 };
 exports.SmartContractCaseController = SmartContractCaseController;

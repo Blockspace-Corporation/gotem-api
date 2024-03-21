@@ -37,8 +37,16 @@ let SmartContractVoteController = class SmartContractVoteController {
     getVoteById(id) {
         return this.smartContractVoteService.getVoteById(id);
     }
-    setVoteExtrinsic(data) {
-        return this.smartContractVoteService.setVoteExtrinsic(data);
+    async setVoteExtrinsic(data) {
+        try {
+            return await this.smartContractVoteService.setVoteExtrinsic(data);
+        }
+        catch (error) {
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.toString() || 'Internal server error',
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 };
 exports.SmartContractVoteController = SmartContractVoteController;

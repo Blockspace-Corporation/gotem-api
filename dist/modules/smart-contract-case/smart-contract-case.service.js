@@ -19,77 +19,78 @@ let SmartContractCaseService = class SmartContractCaseService {
         this.contractAddress = process.env.CASE_CONTRACT_ADDRESS;
     }
     async getAllCase() {
-        return new Promise(async (resolve, reject) => {
-            let caseNfts = [];
-            const api = await this.api;
-            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
-            const options = {
-                storageDepositLimit: null,
-                gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-            };
-            const { output } = (await contract.query['getAllCase'](this.contractAddress, options));
-            if (output != null || output != undefined) {
-                let data = JSON.parse(JSON.stringify(output))["ok"];
-                if (data != null) {
-                    if (data.length > 0) {
-                        for (let i = 0; i < data.length; i++) {
-                            caseNfts.push({
-                                caseId: data[i].caseId,
-                                title: data[i].title,
-                                description: data[i].description,
-                                category: data[i].category,
-                                owner: data[i].owner,
-                                bounty: data[i].bounty,
-                                file: data[i].file,
-                                status: data[i].status
-                            });
-                        }
-                    }
-                }
-            }
-            resolve(caseNfts);
-        });
-    }
-    async getCaseById(id) {
-        return new Promise(async (resolve, reject) => {
-            let caseNft = undefined;
-            const api = await this.api;
-            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
-            const options = {
-                storageDepositLimit: null,
-                gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-            };
-            const { output } = (await contract.query['getCaseById'](this.contractAddress, options, id));
-            if (output != null || output != undefined) {
-                let data = JSON.parse(JSON.stringify(output))["ok"];
-                if (data != null) {
-                    caseNft = {
-                        caseId: data.caseId,
-                        title: data.title,
-                        description: data.description,
-                        category: data.category,
-                        owner: data.owner,
-                        bounty: data.bounty,
-                        file: data.file,
-                        status: data.status
-                    };
-                }
-            }
-            resolve(caseNft);
-        });
-    }
-    async setCaseExtrinsic(data) {
+        let caseNfts = [];
         const api = await this.api;
         const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
         const options = {
             storageDepositLimit: null,
-            gasLimit: api.registry.createType('WeightV2', {
-                refTime: 300000000000,
-                proofSize: 500000,
-            }),
+            gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
         };
-        const setCaseExtrinsic = contract.tx['setCase'](options, data);
-        return setCaseExtrinsic;
+        const { output } = (await contract.query['getAllCase'](this.contractAddress, options));
+        if (output != null || output != undefined) {
+            let data = JSON.parse(JSON.stringify(output))["ok"];
+            if (data != null) {
+                if (data.length > 0) {
+                    for (let i = 0; i < data.length; i++) {
+                        caseNfts.push({
+                            caseId: data[i].caseId,
+                            title: data[i].title,
+                            description: data[i].description,
+                            category: data[i].category,
+                            owner: data[i].owner,
+                            bounty: data[i].bounty,
+                            file: data[i].file,
+                            status: data[i].status
+                        });
+                    }
+                }
+            }
+        }
+        return caseNfts;
+    }
+    async getCaseById(id) {
+        let caseNft = undefined;
+        const api = await this.api;
+        const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
+        const options = {
+            storageDepositLimit: null,
+            gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
+        };
+        const { output } = (await contract.query['getCaseById'](this.contractAddress, options, id));
+        if (output != null || output != undefined) {
+            let data = JSON.parse(JSON.stringify(output))["ok"];
+            if (data != null) {
+                caseNft = {
+                    caseId: data.caseId,
+                    title: data.title,
+                    description: data.description,
+                    category: data.category,
+                    owner: data.owner,
+                    bounty: data.bounty,
+                    file: data.file,
+                    status: data.status
+                };
+            }
+        }
+        return caseNft;
+    }
+    async setCaseExtrinsic(data) {
+        try {
+            const api = await this.api;
+            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
+            const options = {
+                storageDepositLimit: null,
+                gasLimit: api.registry.createType('WeightV2', {
+                    refTime: 300000000000,
+                    proofSize: 500000,
+                }),
+            };
+            const setCaseExtrinsic = contract.tx['setCase'](options, data);
+            return setCaseExtrinsic;
+        }
+        catch (error) {
+            throw error;
+        }
     }
 };
 exports.SmartContractCaseService = SmartContractCaseService;

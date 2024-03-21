@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiCreatedResponse } from '@nestjs/swagger';
 import { SmartContractVoteService } from './smart-contract-vote.service';
 import { SetVoterDto } from './dto/set-voter-nft.dto';
@@ -53,7 +53,14 @@ export class SmartContractVoteController {
     type: SetVoteDto,
     isArray: false,
   })
-  setVoteExtrinsic(@Body() data: SetVoteDto): Promise<any> {
-    return this.smartContractVoteService.setVoteExtrinsic(data);
+  async setVoteExtrinsic(@Body() data: SetVoteDto): Promise<any> {
+    try {
+      return await this.smartContractVoteService.setVoteExtrinsic(data);
+    } catch (error) {
+      throw new HttpException({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        error: error.toString() || 'Internal server error',
+      }, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
