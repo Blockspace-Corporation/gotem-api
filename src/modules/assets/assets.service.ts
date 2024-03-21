@@ -63,23 +63,19 @@ export class AssetsService {
     const api = await this.api;
 
     return new Promise<number>(async (resolve, reject) => {
-      try {
-        if (api.query["assets"] != null || api.query["assets"] != undefined) {
-          const getAssetByAccount = (await api.query["assets"]["account"](asset_id, keypair));
-          if (getAssetByAccount.isEmpty == false) {
-            let data: any = getAssetByAccount.toHuman();
-            let balance = data.balance;
+      const getAssetByAccount = (await api.query["assets"]["account"](asset_id, keypair));
+      if (getAssetByAccount != null || getAssetByAccount != undefined) {
+        if (getAssetByAccount.isEmpty == false) {
+          let data: any = getAssetByAccount.toHuman();
+          let balance = data.balance;
   
-            let newBalance = parseFloat(String(balance).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS));
+          let newBalance = parseFloat(String(balance).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS));
   
-            resolve(newBalance)
-          }
+          resolve(newBalance)
         }
-  
-        resolve(0)
-      } catch (err) {
-        resolve(0)
       }
+
+      resolve(0)
     });
   }
 
