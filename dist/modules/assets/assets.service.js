@@ -62,11 +62,13 @@ let AssetsService = class AssetsService {
         const api = await this.api;
         return new Promise(async (resolve, reject) => {
             const getAssetByAccount = (await api.query["assets"]["account"](asset_id, keypair));
-            if (getAssetByAccount.isEmpty == false) {
-                let data = getAssetByAccount.toHuman();
-                let balance = data.balance;
-                let newBalance = parseFloat(String(balance).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS));
-                resolve(newBalance);
+            if (getAssetByAccount != null || getAssetByAccount != undefined) {
+                if (getAssetByAccount.isEmpty == false) {
+                    let data = getAssetByAccount.toHuman();
+                    let balance = data.balance;
+                    let newBalance = parseFloat(String(balance).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS));
+                    resolve(newBalance);
+                }
             }
             resolve(0);
         });
