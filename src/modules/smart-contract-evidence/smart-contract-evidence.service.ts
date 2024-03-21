@@ -122,7 +122,7 @@ export class SmartContractEvidenceService {
       }),
     };
 
-    const setEvidenceExtrinsic = contract.tx['setCase'](
+    const setEvidenceExtrinsic = contract.tx['setEvidence'](
       options, data
     );
 

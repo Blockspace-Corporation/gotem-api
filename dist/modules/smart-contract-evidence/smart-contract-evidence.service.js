@@ -114,7 +114,7 @@ let SmartContractEvidenceService = class SmartContractEvidenceService {
                 proofSize: 500000,
             }),
         };
-        const setEvidenceExtrinsic = contract.tx['setCase'](options, data);
+        const setEvidenceExtrinsic = contract.tx['setEvidence'](options, data);
         return setEvidenceExtrinsic;
     }
 };
