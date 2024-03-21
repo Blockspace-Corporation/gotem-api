@@ -9,7 +9,7 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
-RUN nest build
+RUN npm run build
 
 EXPOSE 3000
 
