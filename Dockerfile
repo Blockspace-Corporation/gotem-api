@@ -9,6 +9,8 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
+RUN nest build
+
 EXPOSE 3000
 
 CMD ["npm", "run", "start:prod"]
