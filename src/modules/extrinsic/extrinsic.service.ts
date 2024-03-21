@@ -14,7 +14,7 @@ export class ExtrinsicService {
 
     return new Promise<ExecuteExtrinsicsStatusEntity>((resolve, reject) => {
       const executeExtrinsic = api.tx(extrinsics.signedExtrincs);
-      executeExtrinsic.send((result: any) => {
+      executeExtrinsic.send().then((result: any) => {
         if (result.isError) {
           let message: ExecuteExtrinsicsStatusEntity = {
             message: "Something's went wrong!",
@@ -47,7 +47,13 @@ export class ExtrinsicService {
           }
           resolve(message);
         }
-      })
+      }).catch((error: any) => {
+        let message: ExecuteExtrinsicsStatusEntity = {
+          message: error,
+          isError: true
+        }
+        reject(message);
+      });
     });
   }
 }

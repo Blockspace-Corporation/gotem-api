@@ -19,7 +19,7 @@ let ExtrinsicService = class ExtrinsicService {
         const api = await this.api;
         return new Promise((resolve, reject) => {
             const executeExtrinsic = api.tx(extrinsics.signedExtrincs);
-            executeExtrinsic.send((result) => {
+            executeExtrinsic.send().then((result) => {
                 if (result.isError) {
                     let message = {
                         message: "Something's went wrong!",
@@ -47,6 +47,12 @@ let ExtrinsicService = class ExtrinsicService {
                     };
                     resolve(message);
                 }
+            }).catch((error) => {
+                let message = {
+                    message: error,
+                    isError: true
+                };
+                reject(message);
             });
         });
     }

@@ -30,8 +30,16 @@ let SmartContractEvidenceController = class SmartContractEvidenceController {
     getAllEvidenceByCaseId(case_id) {
         return this.smartContractEvidenceService.getAllEvidenceByCaseId(case_id);
     }
-    setEvidenceExtrinsic(data) {
-        return this.smartContractEvidenceService.setEvidenceExtrinsic(data);
+    async setEvidenceExtrinsic(data) {
+        try {
+            return await this.smartContractEvidenceService.setEvidenceExtrinsic(data);
+        }
+        catch (error) {
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.toString() || 'Internal server error',
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 };
 exports.SmartContractEvidenceController = SmartContractEvidenceController;

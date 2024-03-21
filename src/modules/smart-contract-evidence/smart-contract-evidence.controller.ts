@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiCreatedResponse } from '@nestjs/swagger';
 import { SmartContractEvidenceService } from './smart-contract-evidence.service';
 import { SetEvidenceNftDto } from './dto/set-evidence-nft.dto';
@@ -36,7 +36,14 @@ export class SmartContractEvidenceController {
     type: SetEvidenceNftDto,
     isArray: false,
   })
-  setEvidenceExtrinsic(@Body() data: SetEvidenceNftDto): Promise<any> {
-    return this.smartContractEvidenceService.setEvidenceExtrinsic(data);
+  async setEvidenceExtrinsic(@Body() data: SetEvidenceNftDto): Promise<any> {
+    try {
+      return await this.smartContractEvidenceService.setEvidenceExtrinsic(data);
+    } catch (error) {
+      throw new HttpException({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        error: error.toString() || 'Internal server error',
+      }, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

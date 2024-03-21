@@ -19,142 +19,144 @@ let SmartContractVoteService = class SmartContractVoteService {
         this.contractAddress = process.env.VOTE_CONTRACT_ADDRESS;
     }
     async getAllVoter() {
-        return new Promise(async (resolve, reject) => {
-            let voters = [];
-            const api = await this.api;
-            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
-            const options = {
-                storageDepositLimit: null,
-                gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-            };
-            const { output } = (await contract.query['getAllVoter'](this.contractAddress, options));
-            if (output != null || output != undefined) {
-                let data = JSON.parse(JSON.stringify(output))["ok"];
-                if (data != null) {
-                    if (data.length > 0) {
-                        for (let i = 0; i < data.length; i++) {
-                            voters.push({
-                                voterId: data[i].voterId,
-                                caseId: data[i].caseId,
-                                voter: data[i].voter,
-                                amountHold: parseFloat(String(data[i].amountHold).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
-                                voteCredit: parseFloat(String(data[i].voteCredit).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
-                            });
-                        }
+        let voters = [];
+        const api = await this.api;
+        const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
+        const options = {
+            storageDepositLimit: null,
+            gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
+        };
+        const { output } = (await contract.query['getAllVoter'](this.contractAddress, options));
+        if (output != null || output != undefined) {
+            let data = JSON.parse(JSON.stringify(output))["ok"];
+            if (data != null) {
+                if (data.length > 0) {
+                    for (let i = 0; i < data.length; i++) {
+                        voters.push({
+                            voterId: data[i].voterId,
+                            caseId: data[i].caseId,
+                            voter: data[i].voter,
+                            amountHold: parseFloat(String(data[i].amountHold).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
+                            voteCredit: parseFloat(String(data[i].voteCredit).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
+                        });
                     }
                 }
             }
-            resolve(voters);
-        });
+        }
+        return voters;
     }
     async getVoterById(id) {
-        return new Promise(async (resolve, reject) => {
-            let voter = undefined;
-            const api = await this.api;
-            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
-            const options = {
-                storageDepositLimit: null,
-                gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-            };
-            const { output } = (await contract.query['getVoterById'](this.contractAddress, options, id));
-            if (output != null || output != undefined) {
-                let data = JSON.parse(JSON.stringify(output))["ok"];
-                if (data != null) {
-                    voter = {
-                        voterId: data.voterId,
-                        caseId: data.caseId,
-                        voter: data.voter,
-                        amountHold: parseFloat(String(data.amountHold).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
-                        voteCredit: parseFloat(String(data.voteCredit).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
-                    };
-                }
-            }
-            resolve(voter);
-        });
-    }
-    async setVoterExtrinsic(data) {
+        let voter = undefined;
         const api = await this.api;
         const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
         const options = {
             storageDepositLimit: null,
-            gasLimit: api.registry.createType('WeightV2', {
-                refTime: 300000000000,
-                proofSize: 500000,
-            }),
+            gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
         };
-        const setVoterExtrinsic = contract.tx['setVoter'](options, data);
-        return setVoterExtrinsic;
+        const { output } = (await contract.query['getVoterById'](this.contractAddress, options, id));
+        if (output != null || output != undefined) {
+            let data = JSON.parse(JSON.stringify(output))["ok"];
+            if (data != null) {
+                voter = {
+                    voterId: data.voterId,
+                    caseId: data.caseId,
+                    voter: data.voter,
+                    amountHold: parseFloat(String(data.amountHold).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
+                    voteCredit: parseFloat(String(data.voteCredit).split(',').join('')) / (10 ** parseInt(process.env.DECIMALS)),
+                };
+            }
+        }
+        return voter;
     }
-    async getAllVote() {
-        return new Promise(async (resolve, reject) => {
-            let votes = [];
+    async setVoterExtrinsic(data) {
+        try {
             const api = await this.api;
             const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
             const options = {
                 storageDepositLimit: null,
-                gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
+                gasLimit: api.registry.createType('WeightV2', {
+                    refTime: 300000000000,
+                    proofSize: 500000,
+                }),
             };
-            const { output } = (await contract.query['getAllVotes'](this.contractAddress, options));
-            if (output != null || output != undefined) {
-                let data = JSON.parse(JSON.stringify(output))["ok"];
-                if (data != null) {
-                    if (data.length > 0) {
-                        for (let i = 0; i < data.length; i++) {
-                            votes.push({
-                                voteId: data[i].voteId,
-                                caseId: data[i].caseId,
-                                evidenceId: data[i].evidenceId,
-                                voter: data[i].voter,
-                                yesCredit: data[i].yesCredit,
-                                noCredit: data[i].noCredit,
-                                destributionReward: data[i].destributionReward
-                            });
-                        }
+            const setVoterExtrinsic = contract.tx['setVoter'](options, data);
+            return setVoterExtrinsic;
+        }
+        catch (error) {
+            return error;
+        }
+    }
+    async getAllVote() {
+        let votes = [];
+        const api = await this.api;
+        const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
+        const options = {
+            storageDepositLimit: null,
+            gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
+        };
+        const { output } = (await contract.query['getAllVotes'](this.contractAddress, options));
+        if (output != null || output != undefined) {
+            let data = JSON.parse(JSON.stringify(output))["ok"];
+            if (data != null) {
+                if (data.length > 0) {
+                    for (let i = 0; i < data.length; i++) {
+                        votes.push({
+                            voteId: data[i].voteId,
+                            caseId: data[i].caseId,
+                            evidenceId: data[i].evidenceId,
+                            voter: data[i].voter,
+                            yesCredit: data[i].yesCredit,
+                            noCredit: data[i].noCredit,
+                            destributionReward: data[i].destributionReward
+                        });
                     }
                 }
             }
-            resolve(votes);
-        });
+        }
+        return votes;
     }
     async getVoteById(id) {
-        return new Promise(async (resolve, reject) => {
-            let vote = undefined;
-            const api = await this.api;
-            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
-            const options = {
-                storageDepositLimit: null,
-                gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-            };
-            const { output } = (await contract.query['getVoteById'](this.contractAddress, options, id));
-            if (output != null || output != undefined) {
-                let data = JSON.parse(JSON.stringify(output))["ok"];
-                if (data != null) {
-                    vote = {
-                        voteId: data.voteId,
-                        caseId: data.caseId,
-                        evidenceId: data.evidenceId,
-                        voter: data.voter,
-                        yesCredit: data.yesCredit,
-                        noCredit: data.noCredit,
-                        destributionReward: data.destributionReward
-                    };
-                }
-            }
-            resolve(vote);
-        });
-    }
-    async setVoteExtrinsic(data) {
+        let vote = undefined;
         const api = await this.api;
         const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
         const options = {
             storageDepositLimit: null,
-            gasLimit: api.registry.createType('WeightV2', {
-                refTime: 300000000000,
-                proofSize: 500000,
-            }),
+            gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
         };
-        const setVoterExtrinsic = contract.tx['setVote'](options, data);
-        return setVoterExtrinsic;
+        const { output } = (await contract.query['getVoteById'](this.contractAddress, options, id));
+        if (output != null || output != undefined) {
+            let data = JSON.parse(JSON.stringify(output))["ok"];
+            if (data != null) {
+                vote = {
+                    voteId: data.voteId,
+                    caseId: data.caseId,
+                    evidenceId: data.evidenceId,
+                    voter: data.voter,
+                    yesCredit: data.yesCredit,
+                    noCredit: data.noCredit,
+                    destributionReward: data.destributionReward
+                };
+            }
+        }
+        return vote;
+    }
+    async setVoteExtrinsic(data) {
+        try {
+            const api = await this.api;
+            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
+            const options = {
+                storageDepositLimit: null,
+                gasLimit: api.registry.createType('WeightV2', {
+                    refTime: 300000000000,
+                    proofSize: 500000,
+                }),
+            };
+            const setVoterExtrinsic = contract.tx['setVote'](options, data);
+            return setVoterExtrinsic;
+        }
+        catch (error) {
+            return error;
+        }
     }
 };
 exports.SmartContractVoteService = SmartContractVoteService;
