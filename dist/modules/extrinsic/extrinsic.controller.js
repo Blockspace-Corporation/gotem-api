@@ -22,15 +22,23 @@ let ExtrinsicController = class ExtrinsicController {
     constructor(extrinsicService) {
         this.extrinsicService = extrinsicService;
     }
-    executeExtrinsics(data) {
-        return this.extrinsicService.executeExtrinsics(data);
+    async executeExtrinsics(data) {
+        try {
+            return await this.extrinsicService.executeExtrinsics(data);
+        }
+        catch (error) {
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.toString() || 'Internal server error',
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 };
 exports.ExtrinsicController = ExtrinsicController;
 __decorate([
     (0, common_1.Post)('/execute'),
     (0, swagger_1.ApiCreatedResponse)({
-        description: 'Dex extrinsics executed succesfully',
+        description: 'Extrinsics executed succesfully',
         type: execute_extrinsincs_status_entity_1.ExecuteExtrinsicsStatusEntity,
         isArray: false,
     }),
