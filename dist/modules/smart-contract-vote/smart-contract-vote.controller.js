@@ -63,14 +63,14 @@ let SmartContractVoteController = class SmartContractVoteController {
             }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    getAllVote() {
-        return this.smartContractVoteService.getAllVote();
+    getAllVotes() {
+        return this.smartContractVoteService.getAllVotes();
     }
     getVoteById(id) {
         return this.smartContractVoteService.getVoteById(id);
     }
-    getAllVoteByEvidenceId(evidence_id) {
-        return this.smartContractVoteService.getAllVoteByEvidenceId(evidence_id);
+    getAllVotesByEvidenceId(evidence_id) {
+        return this.smartContractVoteService.getAllVotesByEvidenceId(evidence_id);
     }
     async setVoteExtrinsic(data) {
         try {
@@ -161,7 +161,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], SmartContractVoteController.prototype, "getAllVote", null);
+], SmartContractVoteController.prototype, "getAllVotes", null);
 __decorate([
     (0, common_1.Get)('/get/vote/by-id/:id'),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the current record.' }),
@@ -179,7 +179,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
-], SmartContractVoteController.prototype, "getAllVoteByEvidenceId", null);
+], SmartContractVoteController.prototype, "getAllVotesByEvidenceId", null);
 __decorate([
     (0, common_1.Post)('/extrinsic/set-vote'),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Creates an unsigned extrinsic hex value.' }),

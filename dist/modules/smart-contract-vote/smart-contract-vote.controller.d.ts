@@ -13,9 +13,9 @@ export declare class SmartContractVoteController {
     setVoterExtrinsic(data: SetVoterDto): Promise<any>;
     updateVoterExtrinsic(id: number, data: UpdateVoterDto): Promise<any>;
     burnVoterExtrinsic(id: number): Promise<any>;
-    getAllVote(): Promise<VoteEntity[]>;
+    getAllVotes(): Promise<VoteEntity[]>;
     getVoteById(id: number): Promise<VoteEntity>;
-    getAllVoteByEvidenceId(evidence_id: number): Promise<VoteEntity[]>;
+    getAllVotesByEvidenceId(evidence_id: number): Promise<VoteEntity[]>;
     setVoteExtrinsic(data: SetVoteDto): Promise<any>;
     updateVoteExtrinsic(id: number, data: UpdateVoteDto): Promise<any>;
     burnVoteExtrinsic(id: number): Promise<any>;

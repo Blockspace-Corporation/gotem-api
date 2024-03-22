@@ -1,30 +1,26 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import { ContractPromise } from '@polkadot/api-contract';
+import { Injectable } from '@nestjs/common';
+import { ExtrinsicService } from '../extrinsic/extrinsic.service';
 import { SetCaseNftDto } from './dto/set-case-nft.dto';
 import { UpdateCaseNftDto } from './dto/update-case-nft.dto';
 import { CaseNftEntity } from './entities/case-nft.entity';
 
 @Injectable()
 export class SmartContractCaseService {
-  private wsProviderEndpoint = process.env.WS_PROVIDER;
-  private wsProvider = new WsProvider(this.wsProviderEndpoint);
-  private api = ApiPromise.create({ provider: this.wsProvider });
-
   private metadata: any = require("./../../../contract/case.json");
   private contractAddress = process.env.CASE_CONTRACT_ADDRESS;
 
+  constructor(
+    private readonly extrinsicService: ExtrinsicService
+  ) { }
+
   public async getAllCase(): Promise<CaseNftEntity[]> {
     let caseNfts: CaseNftEntity[] = [];
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "getAllCase"
+    );
 
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
-
-    const { output } = (await contract.query['getAllCase'](this.contractAddress, options));
     if (output != null || output != undefined) {
       let data = JSON.parse(JSON.stringify(output))["ok"];
       if (data != null) {
@@ -50,15 +46,13 @@ export class SmartContractCaseService {
 
   public async getCaseById(id: number): Promise<CaseNftEntity> {
     let caseNft: CaseNftEntity = undefined;
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "getCaseById",
+      id
+    );
 
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
-
-    const { output } = (await contract.query['getCaseById'](this.contractAddress, options, id));
     if (output != null || output != undefined) {
       let data = JSON.parse(JSON.stringify(output))["ok"];
       if (data != null) {
@@ -80,18 +74,11 @@ export class SmartContractCaseService {
 
   public async setCaseExtrinsic(data: SetCaseNftDto): Promise<any> {
     try {
-      const api = await this.api;
-      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-      const options: any = {
-        storageDepositLimit: null,
-        gasLimit: api.registry.createType('WeightV2', {
-          refTime: 300000000000,
-          proofSize: 500000,
-        }),
-      };
-
-      const setCaseExtrinsic = contract.tx['setCase'](
-        options, data
+      const setCaseExtrinsic = await this.extrinsicService.createContractTransaction(
+        this.metadata,
+        this.contractAddress,
+        "setCase",
+        data
       );
 
       return setCaseExtrinsic;
@@ -102,18 +89,12 @@ export class SmartContractCaseService {
 
   public async updateCaseExtrinsic(id: number, data: UpdateCaseNftDto): Promise<any> {
     try {
-      const api = await this.api;
-      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-      const options: any = {
-        storageDepositLimit: null,
-        gasLimit: api.registry.createType('WeightV2', {
-          refTime: 300000000000,
-          proofSize: 500000,
-        }),
-      };
-
-      const updateCaseExtrinsic = contract.tx['updateCase'](
-        options, id, data
+      const updateCaseExtrinsic = await this.extrinsicService.createContractTransaction(
+        this.metadata,
+        this.contractAddress,
+        "updateCase",
+        id,
+        data
       );
 
       return updateCaseExtrinsic;
@@ -124,18 +105,11 @@ export class SmartContractCaseService {
 
   public async burnCaseExtrinsic(id: number): Promise<any> {
     try {
-      const api = await this.api;
-      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-      const options: any = {
-        storageDepositLimit: null,
-        gasLimit: api.registry.createType('WeightV2', {
-          refTime: 300000000000,
-          proofSize: 500000,
-        }),
-      };
-
-      const burnCaseExtrinsic = contract.tx['burnCase'](
-        options, id
+      const burnCaseExtrinsic = await this.extrinsicService.createContractTransaction(
+        this.metadata,
+        this.contractAddress,
+        "burnCase",
+        id
       );
 
       return burnCaseExtrinsic;

@@ -79,8 +79,8 @@ export class SmartContractVoteController {
   @Get('/get/all-vote')
   @ApiResponse({ status: 200, description: 'Returns an array of records.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  getAllVote(): Promise<VoteEntity[]> {
-    return this.smartContractVoteService.getAllVote();
+  getAllVotes(): Promise<VoteEntity[]> {
+    return this.smartContractVoteService.getAllVotes();
   }
 
   @Get('/get/vote/by-id/:id')
@@ -93,8 +93,8 @@ export class SmartContractVoteController {
   @Get('/get/all-vote/by-evidence-id/:evidence_id')
   @ApiResponse({ status: 200, description: 'Returns an array of records.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  getAllVoteByEvidenceId(@Param('evidence_id') evidence_id: number): Promise<VoteEntity[]> {
-    return this.smartContractVoteService.getAllVoteByEvidenceId(evidence_id);
+  getAllVotesByEvidenceId(@Param('evidence_id') evidence_id: number): Promise<VoteEntity[]> {
+    return this.smartContractVoteService.getAllVotesByEvidenceId(evidence_id);
   }
 
   @Post('/extrinsic/set-vote')

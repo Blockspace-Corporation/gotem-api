@@ -17,6 +17,7 @@ exports.ExtrinsicModule = ExtrinsicModule = __decorate([
     (0, common_1.Module)({
         controllers: [extrinsic_controller_1.ExtrinsicController],
         providers: [extrinsic_service_1.ExtrinsicService],
+        exports: [extrinsic_service_1.ExtrinsicService]
     })
 ], ExtrinsicModule);
 //# sourceMappingURL=extrinsic.module.js.map

@@ -1,30 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import { ContractPromise } from '@polkadot/api-contract';
+import { ExtrinsicService } from '../extrinsic/extrinsic.service';
 import { SetEvidenceNftDto } from './dto/set-evidence-nft.dto';
 import { UpdateEvidenceNftDto } from './dto/update-evidence-nft.dto';
 import { EvidenceNftEntity } from './entities/evidence-nft.entity';
 
 @Injectable()
 export class SmartContractEvidenceService {
-  private wsProviderEndpoint = process.env.WS_PROVIDER;
-  private wsProvider = new WsProvider(this.wsProviderEndpoint);
-  private api = ApiPromise.create({ provider: this.wsProvider });
-
   private metadata: any = require("./../../../contract/evidence.json");
   private contractAddress = process.env.EVIDENCE_CONTRACT_ADDRESS;
 
+  constructor(
+    private readonly extrinsicService: ExtrinsicService
+  ) { }
+
   public async getAllEvidence(): Promise<EvidenceNftEntity[]> {
     let evidenceNfts: EvidenceNftEntity[] = [];
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "getAllEvidence"
+    );
 
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
-
-    const { output } = (await contract.query['getAllEvidence'](this.contractAddress, options));
     if (output != null || output != undefined) {
       let data = JSON.parse(JSON.stringify(output))["ok"];
       if (data != null) {
@@ -49,15 +45,13 @@ export class SmartContractEvidenceService {
 
   public async getEvidenceById(id: number): Promise<EvidenceNftEntity> {
     let evidenceNft: EvidenceNftEntity = undefined;
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "getEvidenceById",
+      id
+    );
 
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
-
-    const { output } = (await contract.query['getEvidenceById'](this.contractAddress, options, id));
     if (output != null || output != undefined) {
       let data = JSON.parse(JSON.stringify(output))["ok"];
       if (data != null) {
@@ -78,15 +72,13 @@ export class SmartContractEvidenceService {
 
   public async getAllEvidenceByCaseId(caseId: number): Promise<EvidenceNftEntity[]> {
     let evidenceNfts: EvidenceNftEntity[] = [];
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "evidenceByCaseId",
+      caseId
+    );
 
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
-
-    const { output } = (await contract.query['evidenceByCaseId'](this.contractAddress, options, caseId));
     if (output != null || output != undefined) {
       let data = JSON.parse(JSON.stringify(output))["ok"];
       if (data != null) {
@@ -111,18 +103,11 @@ export class SmartContractEvidenceService {
 
   public async setEvidenceExtrinsic(data: SetEvidenceNftDto): Promise<any> {
     try {
-      const api = await this.api;
-      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-      const options: any = {
-        storageDepositLimit: null,
-        gasLimit: api.registry.createType('WeightV2', {
-          refTime: 300000000000,
-          proofSize: 500000,
-        }),
-      };
-
-      const setEvidenceExtrinsic = contract.tx['setEvidence'](
-        options, data
+      const setEvidenceExtrinsic = await this.extrinsicService.createContractTransaction(
+        this.metadata,
+        this.contractAddress,
+        "setEvidence",
+        data
       );
 
       return setEvidenceExtrinsic;
@@ -133,18 +118,12 @@ export class SmartContractEvidenceService {
 
   public async updateEvidenceExtrinsic(id: number, data: UpdateEvidenceNftDto): Promise<any> {
     try {
-      const api = await this.api;
-      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-      const options: any = {
-        storageDepositLimit: null,
-        gasLimit: api.registry.createType('WeightV2', {
-          refTime: 300000000000,
-          proofSize: 500000,
-        }),
-      };
-
-      const updateEvidenceExtrinsic = contract.tx['updateEvidence'](
-        options, id, data
+      const updateEvidenceExtrinsic = await this.extrinsicService.createContractTransaction(
+        this.metadata,
+        this.contractAddress,
+        "updateEvidence",
+        id,
+        data
       );
 
       return updateEvidenceExtrinsic;
@@ -155,18 +134,11 @@ export class SmartContractEvidenceService {
 
   public async burnEvidenceExtrinsic(id: number): Promise<any> {
     try {
-      const api = await this.api;
-      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-      const options: any = {
-        storageDepositLimit: null,
-        gasLimit: api.registry.createType('WeightV2', {
-          refTime: 300000000000,
-          proofSize: 500000,
-        }),
-      };
-
-      const burnEvidenceExtrinsic = contract.tx['burnEvidence'](
-        options, id
+      const burnEvidenceExtrinsic = await this.extrinsicService.createContractTransaction(
+        this.metadata,
+        this.contractAddress,
+        "burnEvidence",
+        id
       );
 
       return burnEvidenceExtrinsic;

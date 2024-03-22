@@ -8,6 +8,7 @@ import { SmartContractCaseModule } from './modules/smart-contract-case/smart-con
 import { SmartContractEvidenceModule } from './modules/smart-contract-evidence/smart-contract-evidence.module';
 import { SmartContractVoteModule } from './modules/smart-contract-vote/smart-contract-vote.module';
 import { ExtrinsicModule } from './modules/extrinsic/extrinsic.module';
+import { SmartContractGtxModule } from './modules/smart-contract-gtx/smart-contract-gtx.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ExtrinsicModule } from './modules/extrinsic/extrinsic.module';
     SmartContractEvidenceModule,
     SmartContractVoteModule,
     ExtrinsicModule,
+    SmartContractGtxModule,
   ],
   controllers: [AppController],
   providers: [AppService],
