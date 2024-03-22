@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import { ContractPromise } from '@polkadot/api-contract';
+import { MetadataEntity } from './entities/metadata.entity';
+import { ExtrinsicService } from '../extrinsic/extrinsic.service';
 
 @Injectable()
 export class SmartContractGtxService {
-  private wsProviderEndpoint = process.env.WS_PROVIDER;
-  private wsProvider = new WsProvider(this.wsProviderEndpoint);
-  private api = ApiPromise.create({ provider: this.wsProvider });
-
   private metadata: any = require("./../../../contract/gtx.json");
   private contractAddress = process.env.GOTEM_TOKEN_CONTRACT_ADDRESS;
+
+  constructor(
+    private readonly extrinsicService: ExtrinsicService
+  ) { }
 
   public async approveExtrinsic(): Promise<void> {
 
@@ -35,107 +35,125 @@ export class SmartContractGtxService {
 
   }
 
-  public async getAllowance(owner: string, spender: string): Promise<void> {
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
-
-    const { output } = (await contract.query['allowance'](this.contractAddress,
-      options, owner, spender
-    ));
+  public async getAllowance(owner: string, spender: string): Promise<number> {
+    let allowance: number = 0;
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "allowance",
+      owner,
+      spender
+    );
 
     if (output != null || output != undefined) {
-
+      let data = JSON.parse(JSON.stringify(output))["ok"];
+      allowance = parseFloat(data);
     }
+
+    return allowance;
   }
 
-  public async getBalanceOf(owner: string): Promise<void> {
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
-
-    const { output } = (await contract.query['balanceOf'](this.contractAddress,
-      options, owner
-    ));
+  public async getBalanceOf(owner: string): Promise<number> {
+    let balance: number = 0;
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "balanceOf",
+      owner
+    );
 
     if (output != null || output != undefined) {
-
+      let data = JSON.parse(JSON.stringify(output))["ok"];
+      balance = parseFloat(data);
     }
+
+    return balance
   }
 
-  public async getDecimals(): Promise<void> {
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
+  public async getDecimals(): Promise<number> {
+    let decimal: number = 0;
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "getDecimals"
+    );
 
-    const { output } = (await contract.query['getDecimals'](this.contractAddress, options));
     if (output != null || output != undefined) {
-
+      let data = JSON.parse(JSON.stringify(output))["ok"];
+      decimal = parseFloat(data);
     }
+
+    return decimal;
   }
 
-  public async getName(): Promise<void> {
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
+  public async getName(): Promise<string> {
+    let name: string = "";
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "getName"
+    );
 
-    const { output } = (await contract.query['getName'](this.contractAddress, options));
     if (output != null || output != undefined) {
-
+      let data = JSON.parse(JSON.stringify(output))["ok"];
+      name = data;
     }
+
+    return name;
   }
 
-  public async getSymbol(): Promise<void> {
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
+  public async getSymbol(): Promise<string> {
+    let symbol: string = "";
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "getSymbol"
+    );
 
-    const { output } = (await contract.query['getSymbol'](this.contractAddress, options));
     if (output != null || output != undefined) {
-
+      let data = JSON.parse(JSON.stringify(output))["ok"];
+      symbol = data;
     }
+
+    return symbol;
   }
 
-  public async getMetadata(): Promise<void> {
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
+  public async getMetadata(): Promise<MetadataEntity> {
+    let metadata: MetadataEntity = new MetadataEntity() || undefined;
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "metadata"
+    );
 
-    const { output } = (await contract.query['metadata'](this.contractAddress, options));
     if (output != null || output != undefined) {
-
+      let data = JSON.parse(JSON.stringify(output))["ok"];
+      if (data != null) {
+        metadata = {
+          totalSupply: data.totalSupply,
+          decimals: data.decimals,
+          tokenSymbol: data.tokenSymbol,
+          tokenName: data.tokenName
+        };
+      }
     }
+
+    return metadata;
   }
 
-  public async getTotalSupply(): Promise<void> {
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
+  public async getTotalSupply(): Promise<number> {
+    let totalSupply: number = 0;
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "totalSupply"
+    );
 
-    const { output } = (await contract.query['totalSupply'](this.contractAddress, options));
     if (output != null || output != undefined) {
-
+      let data = JSON.parse(JSON.stringify(output))["ok"];
+      totalSupply = parseFloat(data);
     }
+
+    return totalSupply;
   }
 }

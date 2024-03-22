@@ -9,6 +9,7 @@ import { SmartContractEvidenceModule } from './modules/smart-contract-evidence/s
 import { SmartContractVoteModule } from './modules/smart-contract-vote/smart-contract-vote.module';
 import { ExtrinsicModule } from './modules/extrinsic/extrinsic.module';
 import { SmartContractGtxModule } from './modules/smart-contract-gtx/smart-contract-gtx.module';
+import { ChainModule } from './modules/chain/chain.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { SmartContractGtxModule } from './modules/smart-contract-gtx/smart-contr
     SmartContractVoteModule,
     ExtrinsicModule,
     SmartContractGtxModule,
+    ChainModule,
   ],
   controllers: [AppController],
   providers: [AppService],
