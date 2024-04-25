@@ -12,31 +12,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setting up AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.4.0
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          export_default_credentials: true
 
       - name: Build Docker image
         run: docker build -t gotem-api . --no-cache
 
-      - name: Push Docker Image to ECR
+      - name: Push Docker Image to Google Container Registry (GCR)
         run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
-          docker tag gotem-api:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/gotem-api:latest
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/gotem-api:latest
+          gcloud auth configure-docker
+          docker tag gotem-api:latest gcr.io/${{ secrets.GCP_PROJECT_ID }}/gotem-api:latest
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/gotem-api:latest
 
-      - name: SSH to EC2 Instance
+      - name: SSH to GCP Instance
         run: |
           mkdir ~/.ssh
-          echo -e "${{ secrets.STAGING_PRIVATE_KEY }}" > ~/.ssh/dec-keypair
-          chmod 400 ~/.ssh/dec-keypair
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/dec-keypair ${{ secrets.STAGING_USERNAME }}@${{ secrets.STAGING_HOST }} \
-            'cd ${{ secrets.STAGING_PATH }} && \  
-            sudo aws configure set aws_access_key_id "${{ secrets.AWS_ACCESS_KEY_ID }}" && \
-            sudo aws configure set aws_secret_access_key "${{ secrets.AWS_SECRET_ACCESS_KEY }}" && \
-            sudo aws configure set default.region "${{ secrets.AWS_REGION }}" && \
-            sudo aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | sudo docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com && \
+          echo -e "${{ secrets.GCP_PRIVATE_KEY }}" > ~/.ssh/gotem-keypair
+          chmod 400 ~/.ssh/gotem-keypair
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/gotem-keypair ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_HOST }} \
+            'cd ${{ secrets.GCP_PATH }} && \
+            gcloud auth configure-docker && \
+            docker pull gcr.io/${{ secrets.GCP_PROJECT_ID }}/gotem-api:latest && \
             sh deploy_staging.sh'
