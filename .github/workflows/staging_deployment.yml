@@ -11,30 +11,28 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.4.0
         with:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           export_default_credentials: true
-
       - name: Build Docker image
         run: docker build -t gotem-api . --no-cache
-
       - name: Push Docker Image to Google Container Registry (GCR)
         run: |
           gcloud auth configure-docker
           docker tag gotem-api:latest gcr.io/${{ secrets.GCP_PROJECT_ID }}/gotem-api:latest
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/gotem-api:latest
-
       - name: SSH to GCP Instance
         run: |
           mkdir ~/.ssh
-          echo -e "${{ secrets.GCP_PRIVATE_KEY }}" > ~/.ssh/gotem-keypair
-          chmod 400 ~/.ssh/gotem-keypair
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/gotem-keypair ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_HOST }} \
-            'cd ${{ secrets.GCP_PATH }} && \
-            gcloud auth configure-docker && \
-            docker pull gcr.io/${{ secrets.GCP_PROJECT_ID }}/gotem-api:latest && \
-            sh deploy_staging.sh'
+          echo -e "${{ secrets.GCP_PRIVATE_KEY }}" > ~/.ssh/google_compute_engine
+          chmod 400 ~/.ssh/google_compute_engine
+          echo -e "${{ secrets.GCP_PUBLIC_KEY }}" > ~/.ssh/google_compute_engine.pub
+          chmod 644 ~/.ssh/google_compute_engine.pub
+          gcloud compute ssh ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_HOST }} --zone=${{ secrets.GCP_ZONE }} \
+          --command="cd ${{ secrets.GCP_PATH }} && \
+                     gcloud auth configure-docker && \
+                     docker pull gcr.io/${{ secrets.GCP_PROJECT_ID }}/gotem-api:latest && \
+                     sh deploy_staging.sh"
