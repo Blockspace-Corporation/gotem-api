@@ -7,6 +7,12 @@ import { UpdateInvestigatorDto } from './dto/update-investigator.dto';
 
 @Injectable()
 export class InvestigatorService {
+  create(createInvestigatorDto: CreateInvestigatorDto) {
+    throw new Error('Method not implemented.');
+  }
+  update(arg0: number, updateInvestigatorDto: UpdateInvestigatorDto) {
+    throw new Error('Method not implemented.');
+  }
 
   constructor(
     @InjectRepository(Investigator)
