@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource} from 'typeorm';
 
 import { AssetsModule } from './modules/assets/assets.module';
 import { SmartContractCaseModule } from './modules/smart-contract-case/smart-contract-case.module';
@@ -10,12 +12,24 @@ import { SmartContractVoteModule } from './modules/smart-contract-vote/smart-con
 import { ExtrinsicModule } from './modules/extrinsic/extrinsic.module';
 import { SmartContractGtxModule } from './modules/smart-contract-gtx/smart-contract-gtx.module';
 import { ChainModule } from './modules/chain/chain.module';
+import { InvestigatorModule } from './modules/investigator/investigator.module';
+import { Investigator } from './modules/investigator/entities/investigator.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+    }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'root',
+      database: 'investigator',
+      entities: [Investigator],
+      synchronize: true,
     }),
     AssetsModule,
     SmartContractCaseModule,
@@ -24,8 +38,11 @@ import { ChainModule } from './modules/chain/chain.module';
     ExtrinsicModule,
     SmartContractGtxModule,
     ChainModule,
+    InvestigatorModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}
