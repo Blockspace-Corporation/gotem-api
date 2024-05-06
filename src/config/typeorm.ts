@@ -11,7 +11,7 @@ const config = {
     username: `root`,
     password: ``,
     database: `investigator`,
-    entities: ["src/modules/investigator/*.entity{.ts,.js}"],
+    entities: ["src/modules/investigator/investigator.entity.ts"],
     migrations: ["src/modules/investigator/*{.ts,.js}"],
     autoLoadEntities: true,
     synchronize: false,
