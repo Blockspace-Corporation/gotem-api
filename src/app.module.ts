@@ -10,13 +10,10 @@ import { SmartContractCaseModule } from './modules/smart-contract-case/smart-con
 import { SmartContractEvidenceModule } from './modules/smart-contract-evidence/smart-contract-evidence.module';
 import { SmartContractVoteModule } from './modules/smart-contract-vote/smart-contract-vote.module';
 import { ExtrinsicModule } from './modules/extrinsic/extrinsic.module';
-<<<<<<< HEAD
 import { SmartContractGtxModule } from './modules/smart-contract-gtx/smart-contract-gtx.module';
 import { ChainModule } from './modules/chain/chain.module';
-=======
 import { InvestigatorModule } from './modules/investigator/investigator.module';
 import { Investigator } from './modules/investigator/entities/investigator.entity';
->>>>>>> 48059428f1f000cc3ae108abc078c9d86da0d64d
 
 @Module({
   imports: [
@@ -39,12 +36,9 @@ import { Investigator } from './modules/investigator/entities/investigator.entit
     SmartContractEvidenceModule,
     SmartContractVoteModule,
     ExtrinsicModule,
-<<<<<<< HEAD
     SmartContractGtxModule,
     ChainModule,
-=======
     InvestigatorModule,
->>>>>>> 48059428f1f000cc3ae108abc078c9d86da0d64d
   ],
   controllers: [AppController],
   providers: [AppService],
