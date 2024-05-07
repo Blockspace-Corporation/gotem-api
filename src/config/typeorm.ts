@@ -9,10 +9,10 @@ const config = {
     host: `localhost`,
     port: `3306`,
     username: `root`,
-    password: ``,
+    password: null,
     database: `investigator`,
     entities: ["src/modules/investigator/investigator.entity.ts"],
-    migrations: ["src/modules/investigator/*{.ts,.js}"],
+    migrations: ["src/modules/investigator/migrations/*{.ts,.js}"],
     autoLoadEntities: true,
     synchronize: false,
 }
