@@ -11,7 +11,7 @@ export class CreateInvestigatorTable1612345678901 implements MigrationInterface 
                 last_name VARCHAR(255),
                 address VARCHAR(255),
                 role VARCHAR(255) DEFAULT 'investigator',
-                email VARCHAR(255),
+                email VARCHAR(255) UNIQUE,
                 status VARCHAR(255),
                 wallet_public_address VARCHAR(255)
             )

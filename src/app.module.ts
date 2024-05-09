@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,6 +14,7 @@ import { SmartContractGtxModule } from './modules/smart-contract-gtx/smart-contr
 import { ChainModule } from './modules/chain/chain.module';
 import { InvestigatorModule } from './modules/investigator/investigator.module';
 import { Investigator } from './modules/investigator/entities/investigator.entity';
+import { config } from 'dotenv';
 
 @Module({
   imports: [
@@ -21,15 +22,18 @@ import { Investigator } from './modules/investigator/entities/investigator.entit
       isGlobal: true,
       envFilePath: '.env',
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'investigator',
-      entities: [Investigator],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get<string>('DATABASE_HOST'),
+        port: configService.get<number>('DATABASE_PORT'),
+        username: configService.get<string>('DATABASE_USERNAME'),
+        password: configService.get<string>('DATABASE_PASSWORD'),
+        database: configService.get<string>('DATABASE_DATABASE'),
+        autoLoadEntities: true,
+        synchronize: true,
+      }),
     }),
     AssetsModule,
     SmartContractCaseModule,
