@@ -16,6 +16,9 @@ import { InvestigatorModule } from './modules/investigator/investigator.module';
 import { Investigator } from './modules/investigator/entities/investigator.entity';
 import { config } from 'dotenv';
 
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -34,6 +37,24 @@ import { config } from 'dotenv';
         autoLoadEntities: true,
         synchronize: true,
       }),
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: String(process.env.MAIL_HOST),
+        port: Number(process.env.MAIL_PORT),
+        secure: false,
+        auth: {
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASS,
+        },
+      },
+      template: {
+        dir: __dirname + './template/notification',
+        adapter: new PugAdapter({  inlineCssEnabled: true,}),
+        options: {
+          strict: true,
+        },
+      },
     }),
     AssetsModule,
     SmartContractCaseModule,
