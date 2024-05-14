@@ -2,40 +2,40 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Investigator } from './entities/investigator.entity';
-import { CreateInvestigatorDto } from './dto/create-investigator.dto';
-import { UpdateInvestigatorDto } from './dto/update-investigator.dto';
 
 @Injectable()
 export class InvestigatorService {
-  // create(createInvestigatorDto: CreateInvestigatorDto) {
-  //   throw new Error('Method not implemented.');
-  // }
-  // update(arg0: number, updateInvestigatorDto: UpdateInvestigatorDto) {
-  //   throw new Error('Method not implemented.');
-  // }
 
   constructor(
     @InjectRepository(Investigator)
-    private investigatorsRepository: Repository<Investigator>,
+    private readonly investigatorRepository: Repository<Investigator>,
   ) {}
-  
-  create(createInvestigatorDto: CreateInvestigatorDto) {
-    return 'This action adds a new investigator';
+
+  async findAll(): Promise<Investigator[]> {
+    return this.investigatorRepository.find();
   }
 
-  findAll(): Promise<Investigator[]> {
-    return this.investigatorsRepository.find();
+  async findById(investigator_id): Promise<Investigator> {
+    return this.investigatorRepository.findOne({ where: { investigator_id } });
   }
 
-  findOne(investigator_id: number): Promise<Investigator | null> {
-    return this.investigatorsRepository.findOneBy({investigator_id});
+  async create(investigator: Investigator): Promise<Investigator> {
+    return this.investigatorRepository.save(investigator);
   }
 
-  update(id: number, updateInvestigatorDto: UpdateInvestigatorDto) {
-    return `This action updates a #${id} investigator`;
+  async updateInvestigator(investigator_id: number, updateFields: Partial<Investigator>): Promise<Investigator | undefined> {
+    const investigatorToUpdate = await this.investigatorRepository.findOne({where: { investigator_id }});
+    
+    if (!investigatorToUpdate) {
+      throw new Error(`Investigator with ID ${investigator_id} not found.`);
+    }
+    
+    Object.assign(investigatorToUpdate, updateFields);
+    
+    return this.investigatorRepository.save(investigatorToUpdate);
   }
 
-  async remove(investigator_id: number): Promise<void> {
-    await this.investigatorsRepository.delete(investigator_id);
+  async delete(investigator_id: number): Promise<void> {
+    await this.investigatorRepository.delete(investigator_id);
   }
 }

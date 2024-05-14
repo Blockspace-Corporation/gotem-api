@@ -1,34 +1,36 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, Delete, Put } from '@nestjs/common';
 import { InvestigatorService } from './investigator.service';
-import { CreateInvestigatorDto } from './dto/create-investigator.dto';
-import { UpdateInvestigatorDto } from './dto/update-investigator.dto';
+import { Investigator } from './entities/investigator.entity';
 
 @Controller('investigator')
 export class InvestigatorController {
   constructor(private readonly investigatorService: InvestigatorService) {}
 
-  @Post()
-  create(@Body() createInvestigatorDto: CreateInvestigatorDto) {
-    return this.investigatorService.create(createInvestigatorDto);
-  }
-
   @Get()
-  findAll() {
+  async findAll(): Promise<Investigator[]> {
     return this.investigatorService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.investigatorService.findOne(+id);
+  @Get(':investigator_id')
+  async findById(@Param('investigator_id') investigator_id: string): Promise<Investigator> {
+    return this.investigatorService.findById(parseInt(investigator_id, 10));
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInvestigatorDto: UpdateInvestigatorDto) {
-    return this.investigatorService.update(+id, updateInvestigatorDto);
+  @Post()
+  async create(@Body() investigator: Investigator): Promise<Investigator> {
+    return this.investigatorService.create(investigator);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.investigatorService.remove(+id);
+  @Put(':id')
+  async updateInvestigator(
+    @Param('id') id: number,
+    @Query() updateFields: Partial<Investigator>,
+  ): Promise<Investigator | undefined> {
+    return this.investigatorService.updateInvestigator(id, updateFields);
+  }
+
+  @Delete(':investigator_id')
+  async delete(@Param('investigator_id') investigator_id): Promise<void> {
+    return this.investigatorService.delete(parseInt(investigator_id, 10));
   }
 }

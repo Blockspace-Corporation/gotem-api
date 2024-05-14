@@ -5,16 +5,16 @@ export class Investigator {
     @PrimaryGeneratedColumn()
     investigator_id: number;
     
-    @Column()
+    @Column({nullable: true})
     profile_name: string;
     
-    @Column()
+    @Column({nullable: true})
     first_name: string;
 
-    @Column()
+    @Column({nullable: true})
     last_name: string;
 
-    @Column()
+    @Column({nullable: true})
     address: string;
 
     // @Column()
@@ -26,13 +26,13 @@ export class Investigator {
     @Column({ default: "investigator" })
     role: string;
 
-    @Column()
+    @Column({nullable: true})
     email: string;
 
-    @Column()
+    @Column({nullable: true})
     status: string;
 
-    @Column()
+    @Column({nullable: true})
     wallet_public_address: string;
     
 }
