@@ -1,10 +1,15 @@
-import { Controller, Get, Post, Body, Query, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, Delete, Put, HttpException, HttpStatus } from '@nestjs/common';
 import { InvestigatorService } from './investigator.service';
 import { Investigator } from './entities/investigator.entity';
 
+import { EmailService } from './email/email.service';
+
 @Controller('investigator')
 export class InvestigatorController {
-  constructor(private readonly investigatorService: InvestigatorService) {}
+  constructor(
+    private readonly investigatorService: InvestigatorService,
+    private readonly emailService: EmailService
+  ) {}
 
   @Get()
   async findAll(): Promise<Investigator[]> {
@@ -17,8 +22,22 @@ export class InvestigatorController {
   }
 
   @Post()
-  async create(@Body() investigator: Investigator): Promise<Investigator> {
-    return this.investigatorService.create(investigator);
+  async createAndSendOtp(
+    @Body() investigator: Investigator,
+    @Body('email') email: string,
+  ): Promise<Investigator> {
+    try {
+      // Create investigator
+      const createdInvestigator = await this.investigatorService.create(investigator);
+      
+      // Generate and send OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      await this.emailService.sendOtp(email, otp);
+
+      return createdInvestigator;
+    } catch (error) {
+      throw new HttpException('Failed to create investigator and send OTP', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Put(':id')

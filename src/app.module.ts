@@ -16,11 +16,16 @@ import { InvestigatorModule } from './modules/investigator/investigator.module';
 import { Investigator } from './modules/investigator/entities/investigator.entity';
 import { config } from 'dotenv';
 
+//sending email otp
+import emailConfig from './config/email.config';
+
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      load: [emailConfig],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
