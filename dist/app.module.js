@@ -22,8 +22,9 @@ const smart_contract_evidence_module_1 = require("./modules/smart-contract-evide
 const smart_contract_vote_module_1 = require("./modules/smart-contract-vote/smart-contract-vote.module");
 const extrinsic_module_1 = require("./modules/extrinsic/extrinsic.module");
 const smart_contract_gtx_module_1 = require("./modules/smart-contract-gtx/smart-contract-gtx.module");
+const chain_module_1 = require("./modules/chain/chain.module");
 const investigator_module_1 = require("./modules/investigator/investigator.module");
-const investigator_entity_1 = require("./modules/investigator/entities/investigator.entity");
+const email_config_1 = require("./config/email.config");
 let AppModule = class AppModule {
     constructor(dataSource) {
         this.dataSource = dataSource;
@@ -36,27 +37,29 @@ exports.AppModule = AppModule = __decorate([
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 envFilePath: '.env',
+                load: [email_config_1.default],
             }),
-            typeorm_1.TypeOrmModule.forRoot({
-                type: 'mysql',
-                host: 'localhost',
-                port: 3306,
-                username: 'root',
-                password: 'root',
-                database: 'investigator',
-                entities: [investigator_entity_1.Investigator],
-                synchronize: true,
+            typeorm_1.TypeOrmModule.forRootAsync({
+                inject: [config_1.ConfigService],
+                useFactory: (configService) => ({
+                    type: 'mysql',
+                    host: configService.get('DATABASE_HOST'),
+                    port: configService.get('DATABASE_PORT'),
+                    username: configService.get('DATABASE_USERNAME'),
+                    password: configService.get('DATABASE_PASSWORD'),
+                    database: configService.get('DATABASE_DATABASE'),
+                    autoLoadEntities: true,
+                    synchronize: true,
+                }),
             }),
             assets_module_1.AssetsModule,
             smart_contract_case_module_1.SmartContractCaseModule,
             smart_contract_evidence_module_1.SmartContractEvidenceModule,
             smart_contract_vote_module_1.SmartContractVoteModule,
             extrinsic_module_1.ExtrinsicModule,
-<<<<<<< HEAD
             smart_contract_gtx_module_1.SmartContractGtxModule,
-=======
+            chain_module_1.ChainModule,
             investigator_module_1.InvestigatorModule,
->>>>>>> 48059428f1f000cc3ae108abc078c9d86da0d64d
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
