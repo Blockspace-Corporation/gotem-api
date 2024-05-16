@@ -4,7 +4,7 @@ import { Readable } from 'stream';
 
 @Injectable()
 export class FileUploadService {
-  async uploadFile(file: Express.Multer.File, investigator_id: number): Promise<string> {
+  async uploadFile(file: Express.Multer.File): Promise<string> {
     const storage = new Storage({
       keyFilename: process.env.GCP_SERVICE_ACCOUNT_KEY,
     });
@@ -13,7 +13,7 @@ export class FileUploadService {
     bufferStream.push(file.buffer);
     bufferStream.push(null);
 
-    const fileDestination = `${investigator_id}_${Date.now()}_${file.originalname}`;
+    const fileDestination = `${Date.now()}_${file.originalname}`;
     const uploadStream = storage.bucket(process.env.GCP_CLOUD_STORAGE_BUCKET_NAME).file(process.env.GCP_CLOUD_STORAGE_BUCKET_PATH + fileDestination).createWriteStream({
       resumable: false,
       metadata: {

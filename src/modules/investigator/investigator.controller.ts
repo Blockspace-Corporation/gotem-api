@@ -48,12 +48,9 @@ export class InvestigatorController {
     },
   })
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(
-    @UploadedFile() file,
-    @Param('investigator_id') investigator_id: number
-  ) {
+  async uploadFile(@UploadedFile() file) {
     try {
-      const fileUrl = await this.fileUploadService.uploadFile(file, investigator_id);
+      const fileUrl = await this.fileUploadService.uploadFile(file);
 
       return { url: fileUrl };
     } catch (error) {
