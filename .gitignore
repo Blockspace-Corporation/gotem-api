@@ -9,3 +9,4 @@ dist/app.module.d.ts
 dist/app.module.js
 dist/app.module.js.map
 dist/tsconfig.build.tsbuildinfo
+gcp-service-account-key.json
