@@ -33,7 +33,7 @@ export class InvestigatorController {
     }
   }
 
-  @Post('/upload/:investigator_id')
+  @Post('/upload')
   @ApiResponse({ status: 200, description: 'Returns the created unsigned extrinsic hex value.' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
