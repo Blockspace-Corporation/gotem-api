@@ -1,4 +1,3 @@
-// src/email/email.service.ts
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
@@ -7,11 +6,13 @@ import * as nodemailer from 'nodemailer';
 export class EmailService {
   private transporter: nodemailer.Transporter;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService
+  ) {
     this.transporter = nodemailer.createTransport({
       host: this.configService.get<string>('email.service'),
       port: this.configService.get<number>('email.port'),
-      secure: false, // true for 465, false for other ports
+      secure: false, 
       auth: {
         user: this.configService.get<string>('email.user'),
         pass: this.configService.get<string>('email.pass'),
@@ -23,7 +24,7 @@ export class EmailService {
     const mailOptions = {
       from: this.configService.get<string>('email.user'),
       to,
-      subject: 'Confirmation Code',
+      subject: 'Gotem - Confirmation Code',
       text: `Your OTP code is ${otp}`,
     };
 

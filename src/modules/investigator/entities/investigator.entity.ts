@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
-export class Investigator {
+@Entity({ name: 'investigator' })
+export class InvestigatorEntity {
     @PrimaryGeneratedColumn()
     investigator_id: number;
     
@@ -17,11 +17,11 @@ export class Investigator {
     @Column({nullable: true})
     address: string;
 
-    // @Column()
-    // credentials: string;
+    @Column()
+    credentials: string;
 
-    // @Column()
-    // profile_picture: string;
+    @Column()
+    profile_picture: string;
     
     @Column({ default: "investigator" })
     role: string;
@@ -34,5 +34,4 @@ export class Investigator {
 
     @Column({nullable: true})
     wallet_public_address: string;
-    
 }

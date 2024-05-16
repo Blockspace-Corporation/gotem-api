@@ -1,55 +1,33 @@
-import { Controller, Get, Post, Body, Query, Param, Delete, Put, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, Delete, Put, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiCreatedResponse, ApiResponse } from '@nestjs/swagger';
 import { InvestigatorService } from './investigator.service';
-import { Investigator } from './entities/investigator.entity';
-
+import { RegisterInvestigatorDto } from './dto/register-investigator.dto';
+import { InvestigatorEntity } from './entities/investigator.entity';
 import { EmailService } from './email/email.service';
 
-@Controller('investigator')
+@Controller('api/investigator')
+@ApiTags('Investigator')
 export class InvestigatorController {
   constructor(
     private readonly investigatorService: InvestigatorService,
     private readonly emailService: EmailService
-  ) {}
+  ) { }
 
-  @Get()
-  async findAll(): Promise<Investigator[]> {
-    return this.investigatorService.findAll();
-  }
-
-  @Get(':investigator_id')
-  async findById(@Param('investigator_id') investigator_id: string): Promise<Investigator> {
-    return this.investigatorService.findById(parseInt(investigator_id, 10));
-  }
-
-  @Post()
+  @Post('/register')
+  @ApiResponse({ status: 200, description: 'Returns the created unsigned extrinsic hex value.' })
   async createAndSendOtp(
-    @Body() investigator: Investigator,
-    @Body('email') email: string,
-  ): Promise<Investigator> {
+    @Body() investigator: RegisterInvestigatorDto
+  ): Promise<InvestigatorEntity> {
     try {
-      // Create investigator
       const createdInvestigator = await this.investigatorService.create(investigator);
-      
-      // Generate and send OTP
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
-      await this.emailService.sendOtp(email, otp);
+
+      // const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      // await this.emailService.sendOtp(createdInvestigator.email, otp);
 
       return createdInvestigator;
     } catch (error) {
+      Logger.log(error);
       throw new HttpException('Failed to create investigator and send OTP', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }
-
-  @Put(':id')
-  async updateInvestigator(
-    @Param('id') id: number,
-    @Query() updateFields: Partial<Investigator>,
-  ): Promise<Investigator | undefined> {
-    return this.investigatorService.updateInvestigator(id, updateFields);
-  }
-
-  @Delete(':investigator_id')
-  async delete(@Param('investigator_id') investigator_id): Promise<void> {
-    return this.investigatorService.delete(parseInt(investigator_id, 10));
   }
 }

@@ -6,12 +6,15 @@ dotenvConfig({ path: '.env' });
 
 const config = {
     type: 'mysql',
-    host: `localhost`,
-    username: `root`,
-    password: null,
-    database: `investigator`,
-    entities: ["src/modules/investigator/investigator.entity.ts"],
-    migrations: ["src/modules/investigator/migrations/*{.ts,.js}"],
+    host: `${process.env.DATABASE_HOST}`,
+    port: `${process.env.DATABASE_PORT}`,
+    username: `${process.env.DATABASE_USERNAME}`,
+    password: `${process.env.DATABASE_PASSWORD}`,
+    database: `${process.env.DATABASE_NAME}`,
+    entities: [
+        "src/modules/investigator/entities/investigator.entity",
+    ],
+    migrations: ["dist/migrations/*{.ts,.js}"],
     autoLoadEntities: true,
     synchronize: false,
 }

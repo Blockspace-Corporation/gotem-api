@@ -16,6 +16,8 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
+const smtp_1 = require("./config/smtp");
+const typeorm_3 = require("./config/typeorm");
 const assets_module_1 = require("./modules/assets/assets.module");
 const smart_contract_case_module_1 = require("./modules/smart-contract-case/smart-contract-case.module");
 const smart_contract_evidence_module_1 = require("./modules/smart-contract-evidence/smart-contract-evidence.module");
@@ -24,7 +26,6 @@ const extrinsic_module_1 = require("./modules/extrinsic/extrinsic.module");
 const smart_contract_gtx_module_1 = require("./modules/smart-contract-gtx/smart-contract-gtx.module");
 const chain_module_1 = require("./modules/chain/chain.module");
 const investigator_module_1 = require("./modules/investigator/investigator.module");
-const email_config_1 = require("./config/email.config");
 let AppModule = class AppModule {
     constructor(dataSource) {
         this.dataSource = dataSource;
@@ -37,20 +38,11 @@ exports.AppModule = AppModule = __decorate([
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 envFilePath: '.env',
-                load: [email_config_1.default],
+                load: [smtp_1.default, typeorm_3.default],
             }),
             typeorm_1.TypeOrmModule.forRootAsync({
                 inject: [config_1.ConfigService],
-                useFactory: (configService) => ({
-                    type: 'mysql',
-                    host: configService.get('DATABASE_HOST'),
-                    port: configService.get('DATABASE_PORT'),
-                    username: configService.get('DATABASE_USERNAME'),
-                    password: configService.get('DATABASE_PASSWORD'),
-                    database: configService.get('DATABASE_DATABASE'),
-                    autoLoadEntities: true,
-                    synchronize: true,
-                }),
+                useFactory: async (configService) => (configService.get('typeorm'))
             }),
             assets_module_1.AssetsModule,
             smart_contract_case_module_1.SmartContractCaseModule,
