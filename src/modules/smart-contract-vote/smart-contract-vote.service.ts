@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import { ContractPromise } from '@polkadot/api-contract';
+import { ExtrinsicService } from '../extrinsic/extrinsic.service';
 import { SetVoterDto } from './dto/set-voter-nft.dto';
 import { SetVoteDto } from './dto/set-vote.dto';
 import { UpdateVoterDto } from './dto/update-voter-nft.dto';
@@ -10,24 +9,21 @@ import { VoteEntity } from './entities/vote.entity';
 
 @Injectable()
 export class SmartContractVoteService {
-  private wsProviderEndpoint = process.env.WS_PROVIDER;
-  private wsProvider = new WsProvider(this.wsProviderEndpoint);
-  private api = ApiPromise.create({ provider: this.wsProvider });
-
   private metadata: any = require("./../../../contract/vote.json");
   private contractAddress = process.env.VOTE_CONTRACT_ADDRESS;
 
+  constructor(
+    private readonly extrinsicService: ExtrinsicService
+  ) { }
+
   public async getAllVoter(): Promise<VoterEntity[]> {
     let voters: VoterEntity[] = [];
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "getAllVoter"
+    );
 
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
-
-    const { output } = (await contract.query['getAllVoter'](this.contractAddress, options));
     if (output != null || output != undefined) {
       let data = JSON.parse(JSON.stringify(output))["ok"];
       if (data != null) {
@@ -50,15 +46,13 @@ export class SmartContractVoteService {
 
   public async getVoterById(id: number): Promise<VoterEntity> {
     let voter: VoterEntity = undefined;
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "getVoterById",
+      id
+    );
 
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
-
-    const { output } = (await contract.query['getVoterById'](this.contractAddress, options, id));
     if (output != null || output != undefined) {
       let data = JSON.parse(JSON.stringify(output))["ok"];
       if (data != null) {
@@ -77,18 +71,11 @@ export class SmartContractVoteService {
 
   public async setVoterExtrinsic(data: SetVoterDto): Promise<any> {
     try {
-      const api = await this.api;
-      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-      const options: any = {
-        storageDepositLimit: null,
-        gasLimit: api.registry.createType('WeightV2', {
-          refTime: 300000000000,
-          proofSize: 500000,
-        }),
-      };
-
-      const setVoterExtrinsic = contract.tx['setVoter'](
-        options, data
+      const setVoterExtrinsic = await this.extrinsicService.createContractTransaction(
+        this.metadata,
+        this.contractAddress,
+        "setVoter",
+        data
       );
 
       return setVoterExtrinsic
@@ -97,21 +84,14 @@ export class SmartContractVoteService {
     }
   }
 
-
   public async updateVoterExtrinsic(id: number, data: UpdateVoterDto): Promise<any> {
     try {
-      const api = await this.api;
-      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-      const options: any = {
-        storageDepositLimit: null,
-        gasLimit: api.registry.createType('WeightV2', {
-          refTime: 300000000000,
-          proofSize: 500000,
-        }),
-      };
-
-      const updateVoterExtrinsic = contract.tx['updateVoter'](
-        options, id, data
+      const updateVoterExtrinsic = await this.extrinsicService.createContractTransaction(
+        this.metadata,
+        this.contractAddress,
+        "updateVoter",
+        id,
+        data
       );
 
       return updateVoterExtrinsic;
@@ -122,18 +102,11 @@ export class SmartContractVoteService {
 
   public async burnVoterExtrinsic(id: number): Promise<any> {
     try {
-      const api = await this.api;
-      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-      const options: any = {
-        storageDepositLimit: null,
-        gasLimit: api.registry.createType('WeightV2', {
-          refTime: 300000000000,
-          proofSize: 500000,
-        }),
-      };
-
-      const burnVoterExtrinsic = contract.tx['burnVoter'](
-        options, id
+      const burnVoterExtrinsic = await this.extrinsicService.createContractTransaction(
+        this.metadata,
+        this.contractAddress,
+        "burnVoter",
+        id
       );
 
       return burnVoterExtrinsic;
@@ -142,17 +115,14 @@ export class SmartContractVoteService {
     }
   }
 
-  public async getAllVote(): Promise<VoteEntity[]> {
+  public async getAllVotes(): Promise<VoteEntity[]> {
     let votes: VoteEntity[] = [];
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "getAllVotes"
+    );
 
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
-
-    const { output } = (await contract.query['getAllVotes'](this.contractAddress, options));
     if (output != null || output != undefined) {
       let data = JSON.parse(JSON.stringify(output))["ok"];
       if (data != null) {
@@ -177,15 +147,13 @@ export class SmartContractVoteService {
 
   public async getVoteById(id: number): Promise<VoteEntity> {
     let vote: VoteEntity = undefined;
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "getVoteById",
+      id
+    );
 
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
-
-    const { output } = (await contract.query['getVoteById'](this.contractAddress, options, id));
     if (output != null || output != undefined) {
       let data = JSON.parse(JSON.stringify(output))["ok"];
       if (data != null) {
@@ -204,17 +172,15 @@ export class SmartContractVoteService {
     return vote;
   }
 
-  public async getAllVoteByEvidenceId(evidenceId: number): Promise<VoteEntity[]> {
+  public async getAllVotesByEvidenceId(evidenceId: number): Promise<VoteEntity[]> {
     let votes: VoteEntity[] = [];
+    let output = await this.extrinsicService.createContractQuery(
+      this.metadata,
+      this.contractAddress,
+      "votesByEvidenceId",
+      evidenceId
+    );
 
-    const api = await this.api;
-    const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-    const options: any = {
-      storageDepositLimit: null,
-      gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-    };
-
-    const { output } = (await contract.query['votesByEvidenceId'](this.contractAddress, options, evidenceId));
     if (output != null || output != undefined) {
       let data = JSON.parse(JSON.stringify(output))["ok"];
       if (data != null) {
@@ -239,18 +205,11 @@ export class SmartContractVoteService {
 
   public async setVoteExtrinsic(data: SetVoteDto): Promise<any> {
     try {
-      const api = await this.api;
-      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-      const options: any = {
-        storageDepositLimit: null,
-        gasLimit: api.registry.createType('WeightV2', {
-          refTime: 300000000000,
-          proofSize: 500000,
-        }),
-      };
-
-      const setVoterExtrinsic = contract.tx['setVote'](
-        options, data
+      const setVoterExtrinsic = await this.extrinsicService.createContractTransaction(
+        this.metadata,
+        this.contractAddress,
+        "setVote",
+        data
       );
 
       return setVoterExtrinsic;
@@ -261,18 +220,12 @@ export class SmartContractVoteService {
 
   public async updateVoteExtrinsic(id: number, data: UpdateVoteDto): Promise<any> {
     try {
-      const api = await this.api;
-      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-      const options: any = {
-        storageDepositLimit: null,
-        gasLimit: api.registry.createType('WeightV2', {
-          refTime: 300000000000,
-          proofSize: 500000,
-        }),
-      };
-
-      const updateVoteExtrinsic = contract.tx['updateVote'](
-        options, id, data
+      const updateVoteExtrinsic = await this.extrinsicService.createContractTransaction(
+        this.metadata,
+        this.contractAddress,
+        "updateVote",
+        id,
+        data
       );
 
       return updateVoteExtrinsic;
@@ -283,18 +236,11 @@ export class SmartContractVoteService {
 
   public async burnVoteExtrinsic(id: number): Promise<any> {
     try {
-      const api = await this.api;
-      const contract = new ContractPromise(api, this.metadata, this.contractAddress);
-      const options: any = {
-        storageDepositLimit: null,
-        gasLimit: api.registry.createType('WeightV2', {
-          refTime: 300000000000,
-          proofSize: 500000,
-        }),
-      };
-
-      const burnVoteExtrinsic = contract.tx['burnVote'](
-        options, id
+      const burnVoteExtrinsic = await this.extrinsicService.createContractTransaction(
+        this.metadata,
+        this.contractAddress,
+        "burnVote",
+        id,
       );
 
       return burnVoteExtrinsic;

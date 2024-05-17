@@ -5,5 +5,6 @@ import { ExtrinsicController } from './extrinsic.controller';
 @Module({
   controllers: [ExtrinsicController],
   providers: [ExtrinsicService],
+  exports: [ExtrinsicService]
 })
 export class ExtrinsicModule {}

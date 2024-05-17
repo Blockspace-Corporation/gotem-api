@@ -9,11 +9,40 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExtrinsicService = void 0;
 const common_1 = require("@nestjs/common");
 const api_1 = require("@polkadot/api");
+const api_contract_1 = require("@polkadot/api-contract");
 let ExtrinsicService = class ExtrinsicService {
     constructor() {
         this.wsProviderEndpoint = process.env.WS_PROVIDER;
         this.wsProvider = new api_1.WsProvider(this.wsProviderEndpoint);
         this.api = api_1.ApiPromise.create({ provider: this.wsProvider });
+    }
+    async createContractQuery(metadata, contractAddress, messageName, ...params) {
+        const api = await this.api;
+        const contract = new api_contract_1.ContractPromise(api, metadata, contractAddress);
+        const options = {
+            storageDepositLimit: null,
+            gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
+        };
+        const { output } = (await contract.query[messageName](contractAddress, options, ...params));
+        return output;
+    }
+    async createContractTransaction(metadata, contractAddress, messageName, ...params) {
+        try {
+            const api = await this.api;
+            const contract = new api_contract_1.ContractPromise(api, metadata, contractAddress);
+            const options = {
+                storageDepositLimit: null,
+                gasLimit: api.registry.createType('WeightV2', {
+                    refTime: 300000000000,
+                    proofSize: 500000,
+                }),
+            };
+            const extrinsic = contract.tx[messageName](options, ...params);
+            return extrinsic;
+        }
+        catch (error) {
+            throw error;
+        }
     }
     async executeExtrinsics(extrinsics) {
         try {
@@ -43,8 +72,7 @@ let ExtrinsicService = class ExtrinsicService {
                             reject(message);
                         }
                     }
-                    if (result.status.isInBlock) {
-                    }
+                    if (result.status.isInBlock) { }
                     if (result.status.isFinalized) {
                         message = {
                             message: "Execution Complete",

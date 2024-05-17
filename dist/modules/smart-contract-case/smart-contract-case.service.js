@@ -5,28 +5,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SmartContractCaseService = void 0;
 const common_1 = require("@nestjs/common");
-const api_1 = require("@polkadot/api");
-const api_contract_1 = require("@polkadot/api-contract");
+const extrinsic_service_1 = require("../extrinsic/extrinsic.service");
 let SmartContractCaseService = class SmartContractCaseService {
-    constructor() {
-        this.wsProviderEndpoint = process.env.WS_PROVIDER;
-        this.wsProvider = new api_1.WsProvider(this.wsProviderEndpoint);
-        this.api = api_1.ApiPromise.create({ provider: this.wsProvider });
+    constructor(extrinsicService) {
+        this.extrinsicService = extrinsicService;
         this.metadata = require("./../../../contract/case.json");
         this.contractAddress = process.env.CASE_CONTRACT_ADDRESS;
     }
     async getAllCase() {
         let caseNfts = [];
-        const api = await this.api;
-        const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
-        const options = {
-            storageDepositLimit: null,
-            gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-        };
-        const { output } = (await contract.query['getAllCase'](this.contractAddress, options));
+        let output = await this.extrinsicService.createContractQuery(this.metadata, this.contractAddress, "getAllCase");
         if (output != null || output != undefined) {
             let data = JSON.parse(JSON.stringify(output))["ok"];
             if (data != null) {
@@ -50,13 +44,7 @@ let SmartContractCaseService = class SmartContractCaseService {
     }
     async getCaseById(id) {
         let caseNft = undefined;
-        const api = await this.api;
-        const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
-        const options = {
-            storageDepositLimit: null,
-            gasLimit: api.registry.createType('WeightV2', api.consts.system.blockWeights['maxBlock']),
-        };
-        const { output } = (await contract.query['getCaseById'](this.contractAddress, options, id));
+        let output = await this.extrinsicService.createContractQuery(this.metadata, this.contractAddress, "getCaseById", id);
         if (output != null || output != undefined) {
             let data = JSON.parse(JSON.stringify(output))["ok"];
             if (data != null) {
@@ -76,16 +64,7 @@ let SmartContractCaseService = class SmartContractCaseService {
     }
     async setCaseExtrinsic(data) {
         try {
-            const api = await this.api;
-            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
-            const options = {
-                storageDepositLimit: null,
-                gasLimit: api.registry.createType('WeightV2', {
-                    refTime: 300000000000,
-                    proofSize: 500000,
-                }),
-            };
-            const setCaseExtrinsic = contract.tx['setCase'](options, data);
+            const setCaseExtrinsic = await this.extrinsicService.createContractTransaction(this.metadata, this.contractAddress, "setCase", data);
             return setCaseExtrinsic;
         }
         catch (error) {
@@ -94,16 +73,7 @@ let SmartContractCaseService = class SmartContractCaseService {
     }
     async updateCaseExtrinsic(id, data) {
         try {
-            const api = await this.api;
-            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
-            const options = {
-                storageDepositLimit: null,
-                gasLimit: api.registry.createType('WeightV2', {
-                    refTime: 300000000000,
-                    proofSize: 500000,
-                }),
-            };
-            const updateCaseExtrinsic = contract.tx['updateCase'](options, id, data);
+            const updateCaseExtrinsic = await this.extrinsicService.createContractTransaction(this.metadata, this.contractAddress, "updateCase", id, data);
             return updateCaseExtrinsic;
         }
         catch (error) {
@@ -112,16 +82,7 @@ let SmartContractCaseService = class SmartContractCaseService {
     }
     async burnCaseExtrinsic(id) {
         try {
-            const api = await this.api;
-            const contract = new api_contract_1.ContractPromise(api, this.metadata, this.contractAddress);
-            const options = {
-                storageDepositLimit: null,
-                gasLimit: api.registry.createType('WeightV2', {
-                    refTime: 300000000000,
-                    proofSize: 500000,
-                }),
-            };
-            const burnCaseExtrinsic = contract.tx['burnCase'](options, id);
+            const burnCaseExtrinsic = await this.extrinsicService.createContractTransaction(this.metadata, this.contractAddress, "burnCase", id);
             return burnCaseExtrinsic;
         }
         catch (error) {
@@ -131,6 +92,7 @@ let SmartContractCaseService = class SmartContractCaseService {
 };
 exports.SmartContractCaseService = SmartContractCaseService;
 exports.SmartContractCaseService = SmartContractCaseService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [extrinsic_service_1.ExtrinsicService])
 ], SmartContractCaseService);
 //# sourceMappingURL=smart-contract-case.service.js.map

@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SmartContractCaseModule = void 0;
 const common_1 = require("@nestjs/common");
+const extrinsic_module_1 = require("../extrinsic/extrinsic.module");
 const smart_contract_case_service_1 = require("./smart-contract-case.service");
 const smart_contract_case_controller_1 = require("./smart-contract-case.controller");
 let SmartContractCaseModule = class SmartContractCaseModule {
@@ -16,6 +17,7 @@ exports.SmartContractCaseModule = SmartContractCaseModule;
 exports.SmartContractCaseModule = SmartContractCaseModule = __decorate([
     (0, common_1.Module)({
         controllers: [smart_contract_case_controller_1.SmartContractCaseController],
+        imports: [extrinsic_module_1.ExtrinsicModule],
         providers: [smart_contract_case_service_1.SmartContractCaseService],
     })
 ], SmartContractCaseModule);
