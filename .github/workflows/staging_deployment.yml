@@ -18,12 +18,12 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           export_default_credentials: true
       - name: Build Docker image
-        run: docker build -t gotem-api . --no-cache
+        run: docker build -t gotem-dapp-api . --no-cache
       - name: Push Docker Image to Google Container Registry (GCR)
         run: |
           gcloud auth configure-docker
-          docker tag gotem-api:latest gcr.io/${{ secrets.GCP_PROJECT_ID }}/gotem-api:latest
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/gotem-api:latest
+          docker tag gotem-dapp-api:latest gcr.io/${{ secrets.GCP_PROJECT_ID }}/gotem-dapp-api:latest
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/gotem-dapp-api:latest
       - name: SSH to GCP Instance
         run: |
           mkdir ~/.ssh
@@ -34,5 +34,5 @@ jobs:
           gcloud compute ssh ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_HOST }} --zone=${{ secrets.GCP_ZONE }} \
           --command="cd ${{ secrets.GCP_PATH }} && \
                      gcloud auth configure-docker && \
-                     docker pull gcr.io/${{ secrets.GCP_PROJECT_ID }}/gotem-api:latest && \
+                     docker pull gcr.io/${{ secrets.GCP_PROJECT_ID }}/gotem-dapp-api:latest && \
                      sh deploy_staging.sh"
